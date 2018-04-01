@@ -7,7 +7,7 @@ const ByteBuffer Controler::RECV_ADDR = ByteBuffer(address[1], sizeof(address[1]
 const ByteBuffer Controler::TRAN_ADDR = ByteBuffer(address[0], sizeof(address[0]));
 
 Controler::Controler() : m_radio(RECV_ADDR, TRAN_ADDR),
-    m_directionJoystick(A0,A1,2), m_throttleJoystick(A2,A3,3)
+    m_directionJoystick(A1,A2,2), m_throttleJoystick(A3,A4,3)
 {
 
 }

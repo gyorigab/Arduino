@@ -17,7 +17,7 @@ Joystick::~Joystick()
 
 void Joystick::init()
 {
-    Trace::print("Joystick init()");
+    TRACE("Joystick init()", DBG);
 
     pinMode(m_pinKey, INPUT_PULLUP);
 
@@ -29,16 +29,25 @@ Data Joystick::getJoystickPosition()
 {
     TRACE_FUNCTION();
 
+    TRACE_VAR("Joystyck Zero X: ", m_zeroX, DBG);
+    TRACE_VAR("Joystyck Zero Y: ", m_zeroY, DBG);
+
     Data d;
 
     int x =  analogRead(m_pinX) - m_zeroX;
     int y =  analogRead(m_pinY) - m_zeroY;
 
+    TRACE_VAR("Joystick Analog RAW X: ", analogRead(m_pinX), DBG);
+    TRACE_VAR("Joystick Analog RAW Y: ", analogRead(m_pinY), DBG);
+
+    TRACE_VAR("Joystick Analog X: ", x, DBG);
+    TRACE_VAR("Joystick Analog Y: ", y, DBG);
+
     if(x > 0) { d.upper = map(x, 0, 1023 - m_zeroX, MIN, MAX); }
     else      { d.lower = map(x, 0,      - m_zeroX, MIN, MAX); }
 
-    if(y > 0) { d.left  = map(y, 0, 1023 - m_zeroY, MIN, MAX); }
-    else      { d.right = map(y, 0,      - m_zeroY, MIN, MAX); }
+    if(y > 0) { d.right = map(y, 0, 1023 - m_zeroY, MIN, MAX); }
+    else      { d.left  = map(y, 0,      - m_zeroY, MIN, MAX); }
 
     int keyPressed = digitalRead(m_pinKey);
 
