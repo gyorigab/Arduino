@@ -5,19 +5,20 @@
 #include <SPI.h>
 
 Quadcopter q;
+Trace t;
 
 void setup() 
 {
-  // put your setup code here, to run once:
-  Serial.begin(9600);
+  t.init();
   q.init();
+    
+  Trace::enableCallStack(true);
+  Trace::enableTrace(true);
+  Trace::verbosity(Trace::DEBUG);
 }
 
 void loop() 
 {
-  // put your main code here, to run repeatedly: 
-  /*ByteBuffer stream = radio.read();*/
   ByteBuffer stream = q.go();
-  Serial.println(stream.cptr());
-  delay(1000);
+  delay(500);
 }

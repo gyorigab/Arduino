@@ -21,16 +21,5 @@ void setup()
 void loop() 
 { 
   c.go();
-  /*i++;
-  char digit[10];
-  snprintf(digit,sizeof(digit),"%d",i);
-  ByteBuffer test((uint8_t *)&digit, sizeof(digit));
-  radio.write(test);*/
-  
-  /*uint8_t input[3] = {0x41, 0x42, 0x43};
-  ByteBuffer test(input, 3);
-  Trace::print(test.cptr());*/
-  
-  //Trace::print(data.upper);
-  delay(1000);
+  delay(500);
 }

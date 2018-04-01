@@ -18,16 +18,26 @@ Message::Message(const Packet& packet)
 
 void Message::set(GID gid, const ByteBuffer& val)
 {
+    TRACE_FUNCTION();
+
     ByteBuffer key;
     key = key.appendUint8(gid);
+
+    TRACE_VAR("Set Key:", key.cptr(), DBG);
+    TRACE_VAR("Set Val:", val.cptr(), DBG);
 
     setData(key,val);
 }
 
 void Message::set(GID gid, RID rid, const ByteBuffer& val)
 {
+    TRACE_FUNCTION();
+
     ByteBuffer key;
     key = key.appendUint8(gid).appendUint8(rid);
+
+    TRACE_VAR("Set Key:", key.cptr(), DBG);
+    TRACE_VAR("Set Val:", val.cptr(), DBG);
 
     setData(key,val);
 }
@@ -46,6 +56,22 @@ ByteBuffer Message::get(GID gid, RID rid) const
     key = key.appendUint8(gid).appendUint8(rid);
 
     return getData(key);
+}
+
+bool Message::has(GID gid) const
+{
+    ByteBuffer key;
+    key = key.appendUint8(gid);
+
+    return m_message.exists(key);
+}
+
+bool Message::has(GID gid, RID rid) const
+{
+    ByteBuffer key;
+    key = key.appendUint8(gid).appendUint8(rid);
+
+    return m_message.exists(key);
 }
 
 int Message::getLevel(uint8_t separator) const
@@ -122,6 +148,11 @@ Packet Message::createPacket() const
         ByteBuffer key = m_message.getKey(i);
         ByteBuffer val = m_message.getValue(i);
 
+        /*TRACE_VAR("Key: ", key.cptr(), DBG);
+        TRACE_VAR("Key Size: ", key.size(), DBG);
+        TRACE_VAR("Val: ", val.cptr(), DBG);
+        TRACE_VAR("Val Size: ", val.size(), DBG);*/
+
         if(key.size() == 1)
         {
             if(val.size() == 0)
@@ -145,6 +176,9 @@ Packet Message::createPacket() const
             }
         }
     }
+
+    /*TRACE_VAR("Message: ", message.cptr(), DBG);
+    TRACE_VAR("Message Size: ", message.size(), DBG);*/
 
     return Packet(m_messageType, message);
 }

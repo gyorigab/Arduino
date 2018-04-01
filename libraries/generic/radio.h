@@ -1,5 +1,5 @@
-#ifndef radio_h
-#define radio_h
+#ifndef RADIO_H
+#define RADIO_H
 
 #include <RF24_config.h>
 #include <RF24.h>

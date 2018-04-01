@@ -11,7 +11,8 @@ class Message final
 public:
     enum GID
     {
-        MotorControl = 0x4D
+        Direction = 0x64,
+        Throttle  = 0x74
     };
 
     enum RID
@@ -34,6 +35,9 @@ public:
 
     ByteBuffer get(GID gid) const;
     ByteBuffer get(GID gid, RID rid) const;
+
+    bool has(GID gid) const;
+    bool has(GID gid, RID rid) const;
 
     Packet createPacket() const;
     void parsePacket(const Packet &packet);

@@ -3,12 +3,20 @@
 
 #include "radio.h"
 #include "bytebuffer.h"
+#include "joystickdata.h"
+#include "message.h"
 
 class Quadcopter
 {
 public:
     Quadcopter();
     void init();
+
+    JoystickData readDirectionMessage(const Message &msg);
+    JoystickData readThrottleMessage(const Message &msg);
+
+    void readMessage(const Message &msg);
+
     ByteBuffer go();
 
 private:

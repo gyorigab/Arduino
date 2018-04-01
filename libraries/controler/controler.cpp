@@ -33,11 +33,16 @@ Message Controler::getDirectionMsg()
     ByteBuffer east  = ByteBuffer::fromInt(data.right);
     ByteBuffer west  = ByteBuffer::fromInt(data.left);
 
-    msg.set(Message::MotorControl);
-    msg.set(Message::MotorControl, Message::North, north);
-    msg.set(Message::MotorControl, Message::South, south);
-    msg.set(Message::MotorControl, Message::West,  west);
-    msg.set(Message::MotorControl, Message::East,  east);
+    TRACE_VAR("NORTH: ", north.cptr(), DBG);
+    TRACE_VAR("SOUTH: ", south.cptr(), DBG);
+    TRACE_VAR("EAST:  ", east.cptr(), DBG);
+    TRACE_VAR("WEST:  ", west.cptr(), DBG);
+
+    msg.set(Message::Direction);
+    msg.set(Message::Direction, Message::North, north);
+    msg.set(Message::Direction, Message::South, south);
+    msg.set(Message::Direction, Message::West,  west);
+    msg.set(Message::Direction, Message::East,  east);
 
     return msg;
 }
@@ -49,8 +54,6 @@ void Controler::sendMessage(const Message &msg)
     Packet p = msg.createPacket();
 
     TRACE_VAR("Payload: ", p.getPayload().cptr(), DBG);
-    TRACE_VAR("Payload: ", p.getPayload().cptr(), WRN);
-    TRACE_VAR("Payload: ", p.getPayload().cptr(), ERR);
 
     ByteBuffer packetEncode = encode(p);
 

@@ -23,6 +23,7 @@ SOURCES += main.cpp \
         ../../trace.cpp\
         ../../../controler/controler.cpp\
         ../../../quadcopter/quadcopter.cpp\
+        ../../../quadcopter/joystickdata.cpp\
         ../../../controler/joystick.cpp\
         ../../../controler/radio.cpp\
         unittests.cpp
@@ -36,6 +37,7 @@ HEADERS += \
     ../../radio.h\
     ../../trace.h\
     ../../../quadcopter/quadcopter.h\
+    ../../../quadcopter/joystickdata.h\
     ../../../controler/controler.h\
     ../../../controler/joystick.h\
     bytebuffertest.h \
