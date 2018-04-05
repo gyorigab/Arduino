@@ -14,10 +14,18 @@ void ControlerData::readMessage(const Message &msg)
     {
         readDirectionMessage(msg);
     }
+    else
+    {
+        TRACE("No direction data", WRN);
+    }
 
     if(hasThrottleData)
     {
         readThrottleMessage(msg);
+    }
+    else
+    {
+        TRACE("No throttle data", WRN);
     }
 }
 

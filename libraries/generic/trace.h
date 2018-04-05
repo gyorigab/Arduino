@@ -3,7 +3,7 @@
 
 #include <Arduino.h>
 
-#define TRACE_FUNCTION() Log l(__FUNCTION__,__FILE__, __LINE__)
+#define TRACE_FUNCTION() Log logFunction(__FUNCTION__,__FILE__, __LINE__)
 
 #define TRACE(message, verbosity)          Trace::print(message,verbosity)
 #define TRACE_VAR(message, var, verbosity) Trace::print(message, var, verbosity)

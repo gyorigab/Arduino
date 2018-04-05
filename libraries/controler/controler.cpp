@@ -20,33 +20,6 @@ void Controler::init()
     m_radio.start();
 }
 
-Message Controler::getDirectionMsg()
-{
-    TRACE_FUNCTION();
-
-    Message msg(Packet::ControlRequest);
-
-    Joystick::Data data = m_directionJoystick.getJoystickPosition();
-
-    ByteBuffer north = ByteBuffer::fromInt(data.upper);
-    ByteBuffer south = ByteBuffer::fromInt(data.lower);
-    ByteBuffer east  = ByteBuffer::fromInt(data.right);
-    ByteBuffer west  = ByteBuffer::fromInt(data.left);
-
-    TRACE_VAR("NORTH: ", north.cptr(), DBG);
-    TRACE_VAR("SOUTH: ", south.cptr(), DBG);
-    TRACE_VAR("EAST:  ", east.cptr(), DBG);
-    TRACE_VAR("WEST:  ", west.cptr(), DBG);
-
-    msg.set(Message::Direction);
-    msg.set(Message::Direction, Message::North, north);
-    msg.set(Message::Direction, Message::South, south);
-    msg.set(Message::Direction, Message::West,  west);
-    msg.set(Message::Direction, Message::East,  east);
-
-    return msg;
-}
-
 void Controler::sendMessage(const Message &msg)
 {
     TRACE_FUNCTION();
@@ -62,7 +35,13 @@ void Controler::sendMessage(const Message &msg)
 
 void Controler::go()
 {
-    Message msg = getDirectionMsg();
-    sendMessage(msg);
+    ControlerMessage cmsg;
+
+    cmsg.createDirectionMsg(m_directionJoystick)
+        .createThrottleMsg(m_throttleJoystick);
+
+    Message *msg = cmsg.getControlerMessage();
+
+    sendMessage(*msg);
 }
 

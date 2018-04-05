@@ -25,7 +25,7 @@ void Joystick::init()
     m_zeroY = analogRead(m_pinY);
 }
 
-Data Joystick::getJoystickPosition()
+Data Joystick::getJoystickPosition() const
 {
     TRACE_FUNCTION();
 

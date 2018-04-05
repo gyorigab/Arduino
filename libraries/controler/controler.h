@@ -5,15 +5,13 @@
 #include "bytebuffer.h"
 #include "joystick.h"
 #include "message.h"
+#include "controlermessage.h"
 
 class Controler
 {
 public:
     Controler();
     void init();
-
-    Message getDirectionMsg();
-    Message getThrottleMsg();
 
     void sendMessage(const Message &msg);
     void go();

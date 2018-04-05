@@ -24,7 +24,7 @@ public:
     Joystick(int pinX, int pinY, int pinKey);
     ~Joystick();
 
-    Data getJoystickPosition();
+    Data getJoystickPosition() const;
     void init();
 
 private:
