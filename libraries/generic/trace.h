@@ -1,7 +1,9 @@
 #ifndef TRACE_H
 #define TRACE_H
 
+#ifndef GDEBUG
 #include <Arduino.h>
+#endif
 
 #define TRACE_FUNCTION() Log logFunction(__FUNCTION__,__FILE__, __LINE__)
 
@@ -33,8 +35,10 @@ public:
                 case STACK:
                     if(m_printCallStack)
                     {
+#ifndef GDEBUG
                         Serial.println(message);
                         Serial.flush();
+#endif
                     }
                     break;
                 case DEBUG:
@@ -66,9 +70,11 @@ public:
                 case STACK:
                     if(m_printCallStack)
                     {
+#ifndef GDEBUG
                         Serial.print(message);
                         Serial.print(var);
                         Serial.flush();
+#endif
                     }
                     break;
                 case DEBUG:
@@ -99,15 +105,19 @@ public:
     template<typename T, typename V>
     static void printData(const char* verb, T message, V var)
     {
+#ifndef GDEBUG
         Serial.print(verb);
         Serial.print(message);
         Serial.println(var);
         Serial.flush();
+#endif
     }
 
     void init()
     {
+#ifndef GDEBUG
         Serial.begin(9600);
+#endif
     }
 
     static void verbosity(Verbosity v)

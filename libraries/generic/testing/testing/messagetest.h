@@ -16,10 +16,10 @@ class MessageTest
         Message m(Packet::ControlRequest);
         Message m1(Packet::ControlRequest);
 
-        uint8_t packet[20] = {0x02,0x43,0x0F,0x00,0x1D,0x4D,0x1E,0x4E,0x31,0x1E,
+        uint8_t packet[20] = {0x02,0x43,0x0F,0x00,0x1D,0x64,0x1E,0x4E,0x31,0x1E,
                               0x53,0x32,0x33,0x1E,0x57,0x00,0x1E,0x45,0x34,0x03};
 
-        uint8_t packet1[20] = {0x02,0x43,0x0F,0x00,0x1D,0x4D,0x1E,0x4E,0x31,0x1E,
+        uint8_t packet1[20] = {0x02,0x43,0x0F,0x00,0x1D,0x64,0x1E,0x4E,0x31,0x1E,
                               0x53,0x32,0x33,0x34,0x1E,0x57,0x1E,0x45,0x34,0x03};
 
         uint8_t northExp[1] = {0x31};
@@ -51,10 +51,10 @@ class MessageTest
         m.parsePacket(p);
         m1.parsePacket(p1);
 
-        ByteBuffer north = m.get(Message::MotorControl, Message::North);
-        ByteBuffer south = m.get(Message::MotorControl, Message::South);
-        ByteBuffer west  = m.get(Message::MotorControl, Message::West);
-        ByteBuffer east  = m.get(Message::MotorControl, Message::East);
+        ByteBuffer north = m.get(Message::Direction, Message::North);
+        ByteBuffer south = m.get(Message::Direction, Message::South);
+        ByteBuffer west  = m.get(Message::Direction, Message::West);
+        ByteBuffer east  = m.get(Message::Direction, Message::East);
 
         ut.checkSizeEquality(north.size(),1);
         ut.checkSizeEquality(south.size(),2);
@@ -66,10 +66,10 @@ class MessageTest
         ut.checkEquality(west.ptr(),  westBuffExp.ptr(),1);
         ut.checkEquality(east.ptr(),  eastBuffExp.ptr(),1);
 
-        ByteBuffer north1 = m1.get(Message::MotorControl, Message::North);
-        ByteBuffer south1 = m1.get(Message::MotorControl, Message::South);
-        ByteBuffer west1 = m1.get(Message::MotorControl,  Message::West);
-        ByteBuffer east1  = m1.get(Message::MotorControl, Message::East);
+        ByteBuffer north1 = m1.get(Message::Direction, Message::North);
+        ByteBuffer south1 = m1.get(Message::Direction, Message::South);
+        ByteBuffer west1 = m1.get(Message::Direction,  Message::West);
+        ByteBuffer east1  = m1.get(Message::Direction, Message::East);
 
         ut.checkSizeEquality(north1.size(),1);
         ut.checkSizeEquality(south1.size(),3);
@@ -83,11 +83,11 @@ class MessageTest
 
         Message m3(Packet::ControlRequest);
 
-        m3.set(Message::MotorControl);
-        m3.set(Message::MotorControl, Message::North, northBuffExp);
-        m3.set(Message::MotorControl, Message::South, southBuffExp);
-        m3.set(Message::MotorControl, Message::West,  westBuffExp);
-        m3.set(Message::MotorControl, Message::East,  eastBuffExp);
+        m3.set(Message::Direction);
+        m3.set(Message::Direction, Message::North, northBuffExp);
+        m3.set(Message::Direction, Message::South, southBuffExp);
+        m3.set(Message::Direction, Message::West,  westBuffExp);
+        m3.set(Message::Direction, Message::East,  eastBuffExp);
 
         Packet p3 = m.createPacket();
         ByteBuffer packetEncode = encode(p3);
