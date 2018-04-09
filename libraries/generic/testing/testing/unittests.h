@@ -10,6 +10,7 @@ class UnitTests
 public:
     UnitTests();
     void checkEquality(bool current, bool expected);
+    void checkEquality(int current, int expected);
     void checkSizeEquality(size_t current, size_t expected);
     void checkEquality(uint8_t current, uint8_t expected);
     void checkEquality(const uint8_t* current, const uint8_t* expected, size_t size);

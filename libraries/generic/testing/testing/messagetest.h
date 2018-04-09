@@ -95,6 +95,100 @@ class MessageTest
         ut.checkSizeEquality(packetEncode.size(), 20);
         ut.checkEquality(packetEncode.ptr(),packetBuffer.ptr(),20);
     }
+
+    static void serialzieTest()
+    {
+        UnitTests ut;
+
+        const int ARRAY_SIZE = 4;
+        int directionItem;
+        int throttleItem;
+
+        int directionVal;
+        int throttleVal;
+
+        int directionArray[ARRAY_SIZE] = {0};
+        int throttleArray[ARRAY_SIZE]  = {0};
+
+        int directionArrayReceived[ARRAY_SIZE] = {0};
+        int throttleArrayReceived[ARRAY_SIZE]  = {0};
+
+        for(int i=0; i<100; i++)
+        {
+            // Transmiter part
+            for(int j=0; j<ARRAY_SIZE; j++)
+            {
+                directionArray[j]         = 0;
+                throttleArray[j]          = 0;
+                //directionArrayReceived[j] = 0;
+                //throttleArrayReceived[j]  = 0;
+            }
+
+            directionVal = int(double(200)*rand()/(RAND_MAX+1.0));
+            throttleVal = int(double(200)*rand()/(RAND_MAX+1.0));
+
+            directionItem = int(double(4)*rand()/(RAND_MAX+1.0));
+            throttleItem = int(double(4)*rand()/(RAND_MAX+1.0));
+
+            directionArray[directionItem] = directionVal;
+            throttleArray[throttleItem] = throttleVal;
+
+            cout << dec << "Transmitted" << endl;
+
+            cout << "North: " << directionArray[0] << endl;
+            cout << "South: " << directionArray[1] << endl;
+            cout << "West:  " << directionArray[2] << endl;
+            cout << "East:  " << directionArray[3] << endl;
+
+           /* cout << "Up:    " << throttleArray[0] << endl;
+            cout << "Down:  " << throttleArray[1] << endl;
+            cout << "Left:  " << throttleArray[2] << endl;
+            cout << "Right: " << throttleArray[3] << endl;*/
+
+            ByteBuffer tNorth = ByteBuffer::fromInt(directionArray[0]);
+            ByteBuffer tSouth = ByteBuffer::fromInt(directionArray[1]);
+            ByteBuffer tEast  = ByteBuffer::fromInt(directionArray[2]);
+            ByteBuffer tWest  = ByteBuffer::fromInt(directionArray[3]);
+
+            Message tMessage(Packet::ControlRequest);
+
+            tMessage.set(Message::Direction);
+            tMessage.set(Message::Direction, Message::North, tNorth);
+            tMessage.set(Message::Direction, Message::South, tSouth);
+            tMessage.set(Message::Direction, Message::West,  tEast);
+            tMessage.set(Message::Direction, Message::East,  tWest);
+
+            Packet pt = tMessage.createPacket();
+            ByteBuffer packetEncode = encode(pt);
+
+            // Receiver part
+
+            Packet pr = decode(packetEncode);
+            Message rMessage(pr);
+
+            ByteBuffer rNorth = rMessage.get(Message::Direction, Message::North);
+            ByteBuffer rSouth = rMessage.get(Message::Direction, Message::South);
+            ByteBuffer rEast  = rMessage.get(Message::Direction, Message::East);
+            ByteBuffer rWest  = rMessage.get(Message::Direction, Message::West);
+
+            directionArrayReceived[0] = rNorth.asInt();
+            directionArrayReceived[1] = rSouth.asInt();
+            directionArrayReceived[2] = rEast.asInt();
+            directionArrayReceived[3] = rWest.asInt();
+
+            cout << dec << "Received " << endl;
+
+            cout << "North: " << directionArrayReceived[0] << endl;
+            cout << "South: " << directionArrayReceived[1] << endl;
+            cout << "West:  " << directionArrayReceived[2] << endl;
+            cout << "East:  " << directionArrayReceived[3] << endl;
+
+            ut.checkEquality(directionArray[0], directionArrayReceived[0]);
+            ut.checkEquality(directionArray[1], directionArrayReceived[1]);
+            ut.checkEquality(directionArray[2], directionArrayReceived[2]);
+            ut.checkEquality(directionArray[3], directionArrayReceived[3]);
+        }
+    }
 };
 
 #endif // MESSAGETEST_H

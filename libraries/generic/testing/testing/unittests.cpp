@@ -14,6 +14,12 @@ void UnitTests::checkEquality(bool current, bool expected)
     else                    printFailed();
 }
 
+void UnitTests::checkEquality(int current, int expected)
+{
+    if(current == expected) printPassed();
+    else                    printFailed();
+}
+
 void UnitTests::checkSizeEquality(size_t current, size_t expected)
 {
     if(current == expected) printPassed();

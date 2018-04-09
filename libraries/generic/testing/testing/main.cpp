@@ -20,4 +20,8 @@ int main(int argc, char *argv[])
 
     cout << "Message" << endl;
     MessageTest::run();
+
+    cout << "Serialize message" << endl;
+    srandom(time(0));
+    MessageTest::serialzieTest();
 }
