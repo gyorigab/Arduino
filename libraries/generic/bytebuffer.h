@@ -130,6 +130,7 @@ public:
 
     const char *cptr() const
     {
+        //TODO inac a lepe (TRACE_BUFFER char po charu)
         return (char*)m_data;
     }
 
@@ -320,6 +321,11 @@ public:
      */
     void asAscii(char* string, size_t len) const
     {
+        if(m_length > len-1)
+        {
+            return;
+        }
+
         for (size_t i = 0; i < m_length; i++)
         {
             if (m_data[i] > 127)
@@ -328,6 +334,8 @@ public:
             }
             string[i] = static_cast<char>(m_data[i]);
         }
+        // zero terminated string
+        string[m_length] = 0;
     }
 
     /**
@@ -357,6 +365,7 @@ public:
         int i = 0;
         char buffer[20];
         this->asAscii(buffer,20);
+        //TODO nahradit za strtol
         sscanf(buffer, "%d", &i);
         return i;
     }
