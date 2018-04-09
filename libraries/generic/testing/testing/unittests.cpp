@@ -22,6 +22,7 @@ void UnitTests::checkEquality(int current, int expected)
 
 void UnitTests::checkSizeEquality(size_t current, size_t expected)
 {
+    cout << "Testing size equality: ";
     if(current == expected) printPassed();
     else                    printFailed();
 }

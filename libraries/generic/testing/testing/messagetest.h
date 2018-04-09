@@ -137,8 +137,8 @@ class MessageTest
 
             cout << "North: " << directionArray[0] << endl;
             cout << "South: " << directionArray[1] << endl;
-            cout << "West:  " << directionArray[2] << endl;
-            cout << "East:  " << directionArray[3] << endl;
+            cout << "East:  " << directionArray[2] << endl;
+            cout << "West:  " << directionArray[3] << endl;
 
            /* cout << "Up:    " << throttleArray[0] << endl;
             cout << "Down:  " << throttleArray[1] << endl;
@@ -155,15 +155,23 @@ class MessageTest
             tMessage.set(Message::Direction);
             tMessage.set(Message::Direction, Message::North, tNorth);
             tMessage.set(Message::Direction, Message::South, tSouth);
-            tMessage.set(Message::Direction, Message::West,  tEast);
-            tMessage.set(Message::Direction, Message::East,  tWest);
+            tMessage.set(Message::Direction, Message::East,  tEast);
+            tMessage.set(Message::Direction, Message::West,  tWest);
 
             Packet pt = tMessage.createPacket();
             ByteBuffer packetEncode = encode(pt);
 
+            ByteBuffer ptb = pt.getPayload();
+
             // Receiver part
 
             Packet pr = decode(packetEncode);
+
+            ByteBuffer ptr = pr.getPayload();
+
+            ut.checkSizeEquality(ptb.size(),ptr.size());
+            ut.checkEquality(ptb.ptr(),ptr.ptr(),ptb.size());
+
             Message rMessage(pr);
 
             ByteBuffer rNorth = rMessage.get(Message::Direction, Message::North);
@@ -180,8 +188,8 @@ class MessageTest
 
             cout << "North: " << directionArrayReceived[0] << endl;
             cout << "South: " << directionArrayReceived[1] << endl;
-            cout << "West:  " << directionArrayReceived[2] << endl;
-            cout << "East:  " << directionArrayReceived[3] << endl;
+            cout << "East:  " << directionArrayReceived[2] << endl;
+            cout << "West:  " << directionArrayReceived[3] << endl;
 
             ut.checkEquality(directionArray[0], directionArrayReceived[0]);
             ut.checkEquality(directionArray[1], directionArrayReceived[1]);
