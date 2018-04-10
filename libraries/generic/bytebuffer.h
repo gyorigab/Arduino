@@ -7,8 +7,6 @@
 #include <stdio.h>
 #endif
 
-#include "trace.h"
-
 /**
  * \brief An array of bytes.
  *

@@ -1,14 +1,19 @@
 #ifndef TRACE_H
 #define TRACE_H
 
-#ifndef GDEBUG
+#ifdef GDEBUG
+#include <iostream>
+#else
 #include <Arduino.h>
 #endif
+
+#include "bytebuffer.h"
 
 #define TRACE_FUNCTION() Log logFunction(__FUNCTION__,__FILE__, __LINE__)
 
 #define TRACE(message, verbosity)          Trace::print(message,verbosity)
 #define TRACE_VAR(message, var, verbosity) Trace::print(message, var, verbosity)
+#define TRACE_BUF(message, var, verbosity) Trace::printBuffer(message, var, verbosity)
 #define TRACING(verbosity)                 Trace::verbosity(verbosity)
 
 #define DBG Trace::DEBUG
@@ -25,41 +30,6 @@ public:
 	Trace(){}
     ~Trace(){}
 	
-    template<typename T>
-    static void println(T message, Verbosity v = Trace::DEBUG)
-    {
-        if(m_printTrace)
-        {
-            switch(v)
-            {
-                case STACK:
-                    if(m_printCallStack)
-                    {
-#ifndef GDEBUG
-                        Serial.println(message);
-                        Serial.flush();
-#endif
-                    }
-                    break;
-                case DEBUG:
-                    if(m_verbosity > 2) printData("[DEBUG]   ", message, "");
-                    break;
-                case INFO:
-                    if(m_verbosity > 1) printData("[INFO]    ", message, "");
-                    break;
-                case WARNING:
-                    if(m_verbosity > 0) printData("[WARNING] ", message, "");
-                    break;
-                case ERROR:
-                    printData("[ERROR]   ", message, "");
-                    break;
-                default:
-                    printData("[DEBUG]   ", message, "");
-                    break;
-            }
-        }
-    }
-
     template<typename T, typename V>
     static void print(T message, V var, Verbosity v = Trace::DEBUG)
     {
@@ -70,11 +40,7 @@ public:
                 case STACK:
                     if(m_printCallStack)
                     {
-#ifndef GDEBUG
-                        Serial.print(message);
-                        Serial.print(var);
-                        Serial.flush();
-#endif
+                        printData("", message, var);
                     }
                     break;
                 case DEBUG:
@@ -93,6 +59,59 @@ public:
                     printData("[DEFAULT] ", message, var);
                     break;
             }
+
+            if(v != Trace::STACK)
+            {
+                newline(v);
+            }
+        }
+    }
+
+    template<typename T>
+    static void printBuffer(T message, const ByteBuffer &buff, Verbosity v = Trace::DEBUG)
+    {
+        if(m_printTrace)
+        {
+            switch(v)
+            {
+                case DEBUG:
+                    if(m_verbosity > 2) printData("[DEBUG]   ", message, buff);
+                    break;
+                case INFO:
+                    if(m_verbosity > 1) printData("[INFO]    ", message, buff);
+                    break;
+                case WARNING:
+                    if(m_verbosity > 0) printData("[WARNING] ", message, buff);
+                    break;
+                case ERROR:
+                    printData("[ERROR]   ", message, buff);
+                    break;
+                default:
+                    printData("[DEFAULT] ", message, buff);
+                    break;
+            }
+            newline(v);
+        }
+    }
+
+    static void newline(Verbosity v = Trace::DEBUG)
+    {
+        if(m_printTrace)
+        {
+            switch(v)
+            {
+                case STACK:
+                    if(m_printCallStack) newln();
+                    break;
+                case DEBUG:
+                case INFO:
+                case WARNING:
+                case ERROR:
+                    newln();
+                    break;
+                default:
+                    newln();
+            }
         }
     }
 
@@ -102,13 +121,56 @@ public:
         print(message,"",v);
     }
 
+    template<typename T>
+    static void printData(const char* verb, T message, const ByteBuffer &buff)
+    {
+#ifdef GDEBUG  // PC
+        std::cout << std::dec;
+        std::cout << verb << message << std::endl;
+        std::cout << "Size: " << buff.size() << std::endl;
+        std::cout << std::hex;
+
+        for(int i=0; i<buff.size(); i++)
+        {
+            std::cout << buff[i]<<" ";
+        }
+#else   // Arduino
+        Serial.print(verb);
+        Serial.print(message);
+        Serial.println("");
+        Serial.print("Size: ")
+        Serial.print(buff.size());
+        Serial.println("");
+
+        for(int i=0; i<buff.size(); i++)
+        {
+            Serial.print(buff[i], HEX);
+            Serial.print(' ');
+        }
+
+        Serial.flush();
+#endif
+    }
+
     template<typename T, typename V>
     static void printData(const char* verb, T message, V var)
     {
-#ifndef GDEBUG
+#ifdef GDEBUG
+        std::cout << verb << message << var << std::endl;
+#else
         Serial.print(verb);
         Serial.print(message);
-        Serial.println(var);
+        Serial.print(var);
+        Serial.flush();
+#endif
+    }
+
+    static void newln()
+    {
+#ifdef GDEBUG
+        std::cout << std::endl;
+#else
+        Serial.println("");
         Serial.flush();
 #endif
     }
@@ -165,7 +227,7 @@ public:
         Trace::print(m_function, Trace::STACK);
         Trace::print(" file: ", m_file, Trace::STACK);
         Trace::print(" line: ", m_line, Trace::STACK);
-        Trace::println("", Trace::STACK);
+        Trace::newline(Trace::STACK);
     }
 
     void space(const char *token)
