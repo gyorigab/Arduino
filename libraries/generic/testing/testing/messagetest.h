@@ -101,8 +101,6 @@ class MessageTest
         UnitTests ut;
 
         const int ARRAY_SIZE = 4;
-        int directionItem;
-        int throttleItem;
 
         int directionVal;
         int throttleVal;
@@ -120,35 +118,38 @@ class MessageTest
             {
                 directionArray[j]         = 0;
                 throttleArray[j]          = 0;
-                //directionArrayReceived[j] = 0;
-                //throttleArrayReceived[j]  = 0;
             }
 
-            directionVal = int(double(200)*rand()/(RAND_MAX+1.0));
-            throttleVal = int(double(200)*rand()/(RAND_MAX+1.0));
+            for(int j=0; j<ARRAY_SIZE; j++)
+            {
+                directionVal = int(double(10000)*rand()/(RAND_MAX+1.0));
+                throttleVal = int(double(10000)*rand()/(RAND_MAX+1.0));
 
-            directionItem = int(double(4)*rand()/(RAND_MAX+1.0));
-            throttleItem = int(double(4)*rand()/(RAND_MAX+1.0));
+                directionArray[j] = directionVal;
+                throttleArray[j] = throttleVal;
+            }
 
-            directionArray[directionItem] = directionVal;
-            throttleArray[throttleItem] = throttleVal;
+            /*cout << "Transmitted \n";
 
-            cout << dec << "Transmitted" << endl;
-
-            /*cout << "North: " << directionArray[0] << endl;
+            cout << "North: " << directionArray[0] << endl;
             cout << "South: " << directionArray[1] << endl;
             cout << "East:  " << directionArray[2] << endl;
             cout << "West:  " << directionArray[3] << endl;
 
             cout << "Up:    " << throttleArray[0] << endl;
             cout << "Down:  " << throttleArray[1] << endl;
-            cout << "Left:  " << throttleArray[2] << endl;
-            cout << "Right: " << throttleArray[3] << endl;*/
+            cout << "Right: " << throttleArray[2] << endl;
+            cout << "Left:  " << throttleArray[3] << endl;*/
 
             ByteBuffer tNorth = ByteBuffer::fromInt(directionArray[0]);
             ByteBuffer tSouth = ByteBuffer::fromInt(directionArray[1]);
             ByteBuffer tEast  = ByteBuffer::fromInt(directionArray[2]);
             ByteBuffer tWest  = ByteBuffer::fromInt(directionArray[3]);
+
+            ByteBuffer tUp    = ByteBuffer::fromInt(throttleArray[0]);
+            ByteBuffer tDown  = ByteBuffer::fromInt(throttleArray[1]);
+            ByteBuffer tRight = ByteBuffer::fromInt(throttleArray[2]);
+            ByteBuffer tLeft  = ByteBuffer::fromInt(throttleArray[3]);
 
             Message tMessage(Packet::ControlRequest);
 
@@ -157,6 +158,12 @@ class MessageTest
             tMessage.set(Message::Direction, Message::South, tSouth);
             tMessage.set(Message::Direction, Message::East,  tEast);
             tMessage.set(Message::Direction, Message::West,  tWest);
+
+            tMessage.set(Message::Throttle);
+            tMessage.set(Message::Throttle, Message::Up,          tUp);
+            tMessage.set(Message::Throttle, Message::Down,        tDown);
+            tMessage.set(Message::Throttle, Message::RotateLeft,  tLeft);
+            tMessage.set(Message::Throttle, Message::RotateRight, tRight);
 
             Packet pt = tMessage.createPacket();
             ByteBuffer packetEncode = encode(pt);
@@ -179,25 +186,42 @@ class MessageTest
             ByteBuffer rEast  = rMessage.get(Message::Direction, Message::East);
             ByteBuffer rWest  = rMessage.get(Message::Direction, Message::West);
 
-            ut.checkEquality(rNorth.ptr(),rNorth.ptr(),rNorth.size());
-            ut.checkEquality(rSouth.ptr(),rSouth.ptr(),rSouth.size());
-            ut.checkEquality(rEast.ptr(),rEast.ptr(),rEast.size());
-            ut.checkEquality(rWest.ptr(),rWest.ptr(),rWest.size());
+            ByteBuffer rUp    = rMessage.get(Message::Throttle, Message::Up);
+            ByteBuffer rDown  = rMessage.get(Message::Throttle, Message::Down);
+            ByteBuffer rRight = rMessage.get(Message::Throttle, Message::RotateRight);
+            ByteBuffer rLeft  = rMessage.get(Message::Throttle, Message::RotateLeft);
 
             directionArrayReceived[0] = rNorth.asInt();
             directionArrayReceived[1] = rSouth.asInt();
             directionArrayReceived[2] = rEast.asInt();
             directionArrayReceived[3] = rWest.asInt();
+            
+            throttleArrayReceived[0] = rUp.asInt();
+            throttleArrayReceived[1] = rDown.asInt();
+            throttleArrayReceived[2] = rRight.asInt();
+            throttleArrayReceived[3] = rLeft.asInt();
 
-            /*cout << "North: " << directionArrayReceived[0]  << endl;
+            /*cout << "Received \n";
+
+            cout << "North: " << directionArrayReceived[0]  << endl;
             cout << "South: " << directionArrayReceived[1]  << endl;
             cout << "East:  " << directionArrayReceived[2]  << endl;
-            cout << "West:  " << directionArrayReceived[3]  << endl;*/
+            cout << "West:  " << directionArrayReceived[3]  << endl;
+
+            cout << "Up:    " << throttleArrayReceived[0]  << endl;
+            cout << "Down:  " << throttleArrayReceived[1]  << endl;
+            cout << "Right: " << throttleArrayReceived[2]  << endl;
+            cout << "Left:  " << throttleArrayReceived[3]  << endl;*/
 
             ut.checkEquality(directionArray[0], directionArrayReceived[0]);
             ut.checkEquality(directionArray[1], directionArrayReceived[1]);
             ut.checkEquality(directionArray[2], directionArrayReceived[2]);
             ut.checkEquality(directionArray[3], directionArrayReceived[3]);
+
+            ut.checkEquality(throttleArray[0], throttleArrayReceived[0]);
+            ut.checkEquality(throttleArray[1], throttleArrayReceived[1]);
+            ut.checkEquality(throttleArray[2], throttleArrayReceived[2]);
+            ut.checkEquality(throttleArray[3], throttleArrayReceived[3]);
         }
     }
 };
