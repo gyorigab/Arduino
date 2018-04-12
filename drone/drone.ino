@@ -1,4 +1,4 @@
-  #include <radio.h>
+#include <radio.h>
 #include <quadcopter.h>
 
 #include <RF24_config.h>
@@ -12,9 +12,9 @@ void setup()
   t.init();
   q.init();
     
-  Trace::enableCallStack(true);
+  Trace::enableCallStack(false);
   Trace::enableTrace(true);
-  Trace::verbosity(Trace::DEBUG);
+  Trace::verbosity(Trace::INFO);
 }
 
 void loop() 
