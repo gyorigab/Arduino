@@ -27,7 +27,7 @@ public:
 	
     enum Verbosity{ERROR, WARNING, INFO, DEBUG, STACK};
 	
-	Trace(){}
+     Trace(){}
     ~Trace(){}
 	
     template<typename T, typename V>
@@ -138,7 +138,7 @@ public:
         Serial.print(verb);
         Serial.print(message);
         Serial.println("");
-        Serial.print("Size: ")
+        Serial.print("Size: ");
         Serial.print(buff.size());
         Serial.println("");
 
