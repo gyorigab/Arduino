@@ -9,6 +9,9 @@ class Joystick final
 {
 public:
 
+    /**
+    * \brief Data structure to store joystick data
+    */
     struct Data
     {
         int upper;
@@ -21,24 +24,38 @@ public:
         Data() : upper(0), lower(0), left(0), right(0), key(false) {}
     };
 
+    /**
+    * \brief Joystick constructor
+    * \param Analog arduino pin e.g. A0, A1... of X axis data
+    * \param Analog arduino pin e.g. A0, A1... of Y axis data
+    * \param Analog arduino pin e.g. A0, A1... of joystick button
+    */
     Joystick(int pinX, int pinY, int pinKey);
     ~Joystick();
 
+    /**
+    * \brief Joystick constructor
+    * \return data of axes X and Y and button state
+    */
     Data getJoystickPosition() const;
+
+
+    /**
+    * \brief Init Joystick HW. Set pins to arduino controler
+    */
     void init();
 
 private:
 
-    int m_pinX;
-    int m_pinY;
-    int m_pinKey;
+    int m_pinX;    // joystick analog pin of X axis
+    int m_pinY;    // joystick analog pin of Y axis
+    int m_pinKey;  // joystick button digital pin
 
-    int m_zeroX;
-    int m_zeroY;
+    int m_zeroX;   // analog X axis value obtained in default position
+    int m_zeroY;   // analog Y axis value obtained in default position
 
     static const int MIN = 0;
     static const int MAX = 100;
-
 };
 
 #endif
