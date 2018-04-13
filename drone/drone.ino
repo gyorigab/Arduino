@@ -14,7 +14,7 @@ void setup()
     
   Trace::enableCallStack(false);
   Trace::enableTrace(true);
-  Trace::verbosity(Trace::INFO);
+  Trace::verbosity(DBG);
 }
 
 void loop() 

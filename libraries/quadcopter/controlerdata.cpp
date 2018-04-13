@@ -7,8 +7,11 @@ ControlerData::ControlerData(const Message &msg)
 
 void ControlerData::readMessage(const Message &msg)
 {
+    TRACE_FUNCTION();
+    TRACING(INF);
+
     bool hasDirectionData = msg.has(Message::Direction);
-    bool hasThrottleData = msg.has(Message::Throttle);
+    bool hasThrottleData  = msg.has(Message::Throttle);
 
     if(hasDirectionData)
     {
@@ -32,6 +35,7 @@ void ControlerData::readMessage(const Message &msg)
 void ControlerData::readDirectionMessage(const Message &msg)
 {
     TRACE_FUNCTION();
+    TRACING(DBG);
 
     ByteBuffer north = msg.get(Message::Direction, Message::North);
     ByteBuffer south = msg.get(Message::Direction, Message::South);
@@ -43,10 +47,10 @@ void ControlerData::readDirectionMessage(const Message &msg)
     m_directionData.left  = east.asInt();
     m_directionData.right = west.asInt();
 
-    TRACE_VAR("North: ", m_directionData.upper, INF);
-    TRACE_VAR("South: ", m_directionData.lower, INF);
-    TRACE_VAR("East: ",  m_directionData.left, INF);
-    TRACE_VAR("West: ",  m_directionData.right, INF);
+    TRACE_VAR("North: ", m_directionData.upper, DBG);
+    TRACE_VAR("South: ", m_directionData.lower, DBG);
+    TRACE_VAR("East: ",  m_directionData.left,  DBG);
+    TRACE_VAR("West: ",  m_directionData.right, DBG);
 }
 
 void ControlerData::readThrottleMessage(const Message &msg)
@@ -63,8 +67,8 @@ void ControlerData::readThrottleMessage(const Message &msg)
     m_throttleData.left  = left.asInt();
     m_throttleData.right = right.asInt();
 
-    TRACE_VAR("Up:    ", m_throttleData.upper, INF);
-    TRACE_VAR("Down:  ", m_throttleData.lower, INF);
-    TRACE_VAR("Left:  ", m_throttleData.left,  INF);
-    TRACE_VAR("Right: ", m_throttleData.right, INF);
+    TRACE_VAR("Up:    ", m_throttleData.upper, DBG);
+    TRACE_VAR("Down:  ", m_throttleData.lower, DBG);
+    TRACE_VAR("Left:  ", m_throttleData.left,  DBG);
+    TRACE_VAR("Right: ", m_throttleData.right, DBG);
 }

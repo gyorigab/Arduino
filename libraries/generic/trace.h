@@ -44,25 +44,20 @@ public:
                     }
                     break;
                 case DEBUG:
-                    if(m_verbosity > 2) printData("[DEBUG]   ", message, var);
+                    if(m_verbosity > 2) printDataLn("[DEBUG]   ", message, var);
                     break;
                 case INFO:
-                    if(m_verbosity > 1) printData("[INFO]    ", message, var);
+                    if(m_verbosity > 1) printDataLn("[INFO]    ", message, var);
                     break;
                 case WARNING:
-                    if(m_verbosity > 0) printData("[WARNING] ", message, var);
+                    if(m_verbosity > 0) printDataLn("[WARNING] ", message, var);
                     break;
                 case ERROR:
-                    printData("[ERROR]   ", message, var);
+                    printDataLn("[ERROR]   ", message, var);
                     break;
                 default:
-                    printData("[DEFAULT] ", message, var);
+                    printDataLn("[DEFAULT] ", message, var);
                     break;
-            }
-
-            if(v != Trace::STACK)
-            {
-                newline(v);
             }
         }
     }
@@ -90,7 +85,6 @@ public:
                     printData("[DEFAULT] ", message, buff);
                     break;
             }
-            newline(v);
         }
     }
 
@@ -134,6 +128,7 @@ public:
         {
             std::cout << buff[i]<<" ";
         }
+
 #else   // Arduino
         Serial.print(verb);
         Serial.print(message);
@@ -150,6 +145,13 @@ public:
 
         Serial.flush();
 #endif
+    }
+
+    template<typename T, typename V>
+    static void printDataLn(const char* verb, T message, V var)
+    {
+        printData(verb,message,var);
+        newln();
     }
 
     template<typename T, typename V>

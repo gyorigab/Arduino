@@ -23,10 +23,11 @@ void Controler::init()
 void Controler::sendMessage(const Message &msg)
 {
     TRACE_FUNCTION();
+    TRACING(INF);
 
     Packet p = msg.createPacket();
 
-    TRACE_VAR("Payload: ", p.getPayload().cptr(), DBG);
+    TRACE_BUF("Controler payload: ", p.getPayload(), DBG);
 
     ByteBuffer packetEncode = encode(p);
 

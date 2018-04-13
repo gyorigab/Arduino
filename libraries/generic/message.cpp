@@ -3,13 +3,10 @@
 
 Message::Message(uint8_t messageType) : m_messageType(messageType)
 {
-    TRACE("Message Constructor - empty message", DBG);
 }
 
 Message::Message(const Packet& packet)
 {
-    TRACE("Message Constructor - parse packet", DBG);
-
     if (!packet.getPayload().empty())
     {
        parsePacket(packet);
@@ -18,26 +15,16 @@ Message::Message(const Packet& packet)
 
 void Message::set(GID gid, const ByteBuffer& val)
 {
-    TRACE_FUNCTION();
-
     ByteBuffer key;
     key = key.appendUint8(gid);
-
-    TRACE_VAR("Set Key:", key.cptr(), DBG);
-    TRACE_VAR("Set Val:", val.cptr(), DBG);
 
     setData(key,val);
 }
 
 void Message::set(GID gid, RID rid, const ByteBuffer& val)
 {
-    TRACE_FUNCTION();
-
     ByteBuffer key;
     key = key.appendUint8(gid).appendUint8(rid);
-
-    TRACE_VAR("Set Key:", key.cptr(), DBG);
-    TRACE_VAR("Set Val:", val.cptr(), DBG);
 
     setData(key,val);
 }
@@ -141,17 +128,14 @@ void Message::parsePacket(const Packet &packet)
 
 Packet Message::createPacket() const
 {
+    TRACING(INF);
+
     ByteBuffer message;
 
     for(int i = 0; i < m_message.size(); i++)
     {
         ByteBuffer key = m_message.getKey(i);
         ByteBuffer val = m_message.getValue(i);
-
-        /*TRACE_VAR("Key: ", key.cptr(), DBG);
-        TRACE_VAR("Key Size: ", key.size(), DBG);
-        TRACE_VAR("Val: ", val.cptr(), DBG);
-        TRACE_VAR("Val Size: ", val.size(), DBG);*/
 
         if(key.size() == 1)
         {
@@ -177,8 +161,7 @@ Packet Message::createPacket() const
         }
     }
 
-    /*TRACE_VAR("Message: ", message.cptr(), DBG);
-    TRACE_VAR("Message Size: ", message.size(), DBG);*/
+    TRACE_BUF("Message: ", message.cptr(), DBG);
 
     return Packet(m_messageType, message);
 }

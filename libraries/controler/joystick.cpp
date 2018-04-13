@@ -17,8 +17,6 @@ Joystick::~Joystick()
 
 void Joystick::init()
 {
-    TRACE("Joystick init()", DBG);
-
     pinMode(m_pinKey, INPUT_PULLUP);
 
     m_zeroX = analogRead(m_pinX);
@@ -28,6 +26,7 @@ void Joystick::init()
 Data Joystick::getJoystickPosition() const
 {
     TRACE_FUNCTION();
+    TRACING(INF);
 
     TRACE_VAR("Joystyck Zero X: ", m_zeroX, DBG);
     TRACE_VAR("Joystyck Zero Y: ", m_zeroY, DBG);

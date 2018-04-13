@@ -22,6 +22,8 @@ void Quadcopter::init()
 ByteBuffer Quadcopter::go()
 {
     TRACE_FUNCTION();
+    TRACING(DBG);
+
     ByteBuffer bb = m_radio.read();
     Packet p = decode(bb);
 
@@ -29,7 +31,7 @@ ByteBuffer Quadcopter::go()
 
     ControlerData cdata(msg);
 
-    TRACE_VAR("DATA PAYLOAD",p.getPayload().cptr(), DBG );
+    TRACE_BUF("Data Payload Received",p.getPayload(), DBG );
 
     return p.getPayload();
 }

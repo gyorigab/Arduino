@@ -12,6 +12,7 @@ ControlerMessage::~ControlerMessage()
 ControlerMessage& ControlerMessage::createDirectionMsg(const Joystick &joystick)
 {
     TRACE_FUNCTION();
+    TRACING(INF);
 
     Joystick::Data data = joystick.getJoystickPosition();
 
@@ -20,10 +21,10 @@ ControlerMessage& ControlerMessage::createDirectionMsg(const Joystick &joystick)
     ByteBuffer east  = ByteBuffer::fromInt(data.right);
     ByteBuffer west  = ByteBuffer::fromInt(data.left);
 
-    TRACE_VAR("NORTH: ", north.cptr(), DBG);
-    TRACE_VAR("SOUTH: ", south.cptr(), DBG);
-    TRACE_VAR("EAST:  ", east.cptr(),  DBG);
-    TRACE_VAR("WEST:  ", west.cptr(),  DBG);
+    TRACE_BUF("NORTH: ", north, DBG);
+    TRACE_BUF("SOUTH: ", south, DBG);
+    TRACE_BUF("EAST:  ", east,  DBG);
+    TRACE_BUF("WEST:  ", west,  DBG);
 
     m_message.set(Message::Direction);
     m_message.set(Message::Direction, Message::North, north);
@@ -37,6 +38,7 @@ ControlerMessage& ControlerMessage::createDirectionMsg(const Joystick &joystick)
 ControlerMessage& ControlerMessage::createThrottleMsg(const Joystick &joystick)
 {
     TRACE_FUNCTION();
+    TRACING(INF);
 
     Joystick::Data data = joystick.getJoystickPosition();
 
@@ -45,10 +47,10 @@ ControlerMessage& ControlerMessage::createThrottleMsg(const Joystick &joystick)
     ByteBuffer right = ByteBuffer::fromInt(data.right);
     ByteBuffer left  = ByteBuffer::fromInt(data.left);
 
-    TRACE_VAR("UP:    ", up.cptr(),    DBG);
-    TRACE_VAR("DOWN:  ", down.cptr(),  DBG);
-    TRACE_VAR("LEFT:  ", left.cptr(),  DBG);
-    TRACE_VAR("RIGHT: ", right.cptr(), DBG);
+    TRACE_BUF("UP:    ", up,    DBG);
+    TRACE_BUF("DOWN:  ", down,  DBG);
+    TRACE_BUF("LEFT:  ", left,  DBG);
+    TRACE_BUF("RIGHT: ", right, DBG);
 
     m_message.set(Message::Throttle);
     m_message.set(Message::Throttle, Message::Up, up);
