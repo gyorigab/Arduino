@@ -161,7 +161,7 @@ Packet Message::createPacket() const
         }
     }
 
-    TRACE_BUF("Message: ", message.cptr(), DBG);
+    TRACE_BUF("Message: ", message, DBG);
 
     return Packet(m_messageType, message);
 }

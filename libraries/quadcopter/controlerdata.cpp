@@ -56,6 +56,7 @@ void ControlerData::readDirectionMessage(const Message &msg)
 void ControlerData::readThrottleMessage(const Message &msg)
 {
     TRACE_FUNCTION();
+    TRACING(INF);
 
     ByteBuffer up    = msg.get(Message::Throttle, Message::Up);
     ByteBuffer down  = msg.get(Message::Throttle, Message::Down);

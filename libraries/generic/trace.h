@@ -14,7 +14,7 @@
 #define TRACE(message, verbosity)          Trace::print(message,verbosity)
 #define TRACE_VAR(message, var, verbosity) Trace::print(message, var, verbosity)
 #define TRACE_BUF(message, var, verbosity) Trace::printBuffer(message, var, verbosity)
-#define TRACING(verbosity)                 Trace::verbosity(verbosity)
+#define TRACING(verbosity)                 VerbositySetter verbSetter(verbosity)
 
 #define DBG Trace::DEBUG
 #define WRN Trace::WARNING
@@ -132,10 +132,9 @@ public:
 #else   // Arduino
         Serial.print(verb);
         Serial.print(message);
-        Serial.println("");
         Serial.print("Size: ");
         Serial.print(buff.size());
-        Serial.println("");
+        Serial.print(" Data: ");
 
         for(int i=0; i<buff.size(); i++)
         {
@@ -143,6 +142,7 @@ public:
             Serial.print(' ');
         }
 
+        Serial.println("");
         Serial.flush();
 #endif
     }
@@ -184,7 +184,7 @@ public:
 #endif
     }
 
-    static void verbosity(Verbosity v)
+    static void setVerbosity(Verbosity v)
     {
         m_verbosity = v;
     }
@@ -199,10 +199,30 @@ public:
         m_printTrace = enable;
     }
 
+    static Verbosity getVerbosity() {return m_verbosity;}
+
 private:
     static Verbosity m_verbosity;
     static bool m_printCallStack;
     static bool m_printTrace;
+};
+
+class VerbositySetter
+{
+public:
+    VerbositySetter(Trace::Verbosity v)
+    {
+        m_lastVerbosity = Trace::getVerbosity();
+        Trace::setVerbosity(v);
+    }
+
+    ~VerbositySetter()
+    {
+        Trace::setVerbosity(m_lastVerbosity);
+    }
+
+private:
+    Trace::Verbosity m_lastVerbosity;
 };
 
 class Log

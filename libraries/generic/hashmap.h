@@ -33,9 +33,9 @@ public:
 
     HashMap(size_t capacity = 16) : m_capacity(capacity), m_size(0)
     {
-        Trace::print("Hash map constructor - begin");
+        TRACING(INF);
+        TRACE("Hash map constructor - begin", DBG);
         m_records =  m_capacity ? new Record[m_capacity] : NULL;
-        Trace::print("Hash map constructor - end");
     }
 
     ~HashMap()
