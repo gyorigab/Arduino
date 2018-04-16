@@ -126,12 +126,6 @@ public:
         return m_data;
     }
 
-    const char *cptr() const
-    {
-        //TODO inac a lepe (TRACE_BUFFER char po charu)
-        return (char*)m_data;
-    }
-
     /**
      * \brief Returns the number of bytes in the byte buffer.
      * \return the number of bytes in the byte buffer

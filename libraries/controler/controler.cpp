@@ -18,7 +18,7 @@ void Controler::init()
     m_directionJoystick.init();
     m_throttleJoystick.init();
 
-    m_radio.start();
+    m_radio.init();
 }
 
 void Controler::sendMessage(const Message &msg)

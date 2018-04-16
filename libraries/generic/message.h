@@ -140,7 +140,12 @@ private:
      */
     void setData(const ByteBuffer &key, const ByteBuffer &value)
     {
-        m_message.insert(key,value);
+        TRACING(INF);
+
+        if( !m_message.insert(key,value) )
+        {
+            TRACE("Message capacity is full", ERR);
+        }
     }
 
 public:

@@ -16,7 +16,7 @@ Quadcopter::Quadcopter() : m_radio(RECV_ADDR, TRAN_ADDR)
 
 void Quadcopter::init()
 {
-    m_radio.start();
+    m_radio.init();
 }
 
 ByteBuffer Quadcopter::go()

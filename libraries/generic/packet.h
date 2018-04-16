@@ -27,13 +27,27 @@ public:
         ControlRequest = 0x43
     };
 
+    /**
+    * \brief Initialize packet
+    * \param type of the packet e.g. controlRequest
+    * \param payload of the packet
+    */
     Packet(uint8_t type = InvalidType, ByteBuffer payload = ByteBuffer()) : m_type(type), m_payload(payload){}
 
+
+    /**
+    * \brief Function returns payload of the packet
+    * \return packet payload
+    */
     const ByteBuffer& getPayload() const
     {
         return m_payload;
     }
 
+    /**
+    * \brief Function returns type of the packet
+    * \return packet type
+    */
     uint8_t getType() const
     {
         return m_type;
@@ -48,6 +62,11 @@ public:
     static const uint8_t ETX = 0x03;
 };
 
+/**
+* \brief Decode byte stream into the packet
+* \param stream which contains packet frame, packet type data length and data itself
+* \return instance of packet
+*/
 inline Packet decode(ByteBuffer &src)
 {
     TRACE_FUNCTION();
@@ -93,6 +112,11 @@ inline Packet decode(ByteBuffer &src)
     return Packet(type, payload);
 }
 
+/**
+* \brief Encode packet into the byte stream
+* \param instance of packet
+* \return stream which contains packet frame, packet type data length and data itself
+*/
 inline ByteBuffer encode(const Packet &packet)
 {
     TRACE_FUNCTION();

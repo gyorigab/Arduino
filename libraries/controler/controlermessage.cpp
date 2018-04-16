@@ -12,7 +12,7 @@ ControlerMessage::~ControlerMessage()
 ControlerMessage& ControlerMessage::createDirectionMsg(const Joystick &joystick)
 {
     TRACE_FUNCTION();
-    TRACING(INF);
+    TRACING(DBG);
 
     Joystick::Data data = joystick.getJoystickPosition();
 

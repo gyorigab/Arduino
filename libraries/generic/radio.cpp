@@ -1,6 +1,7 @@
 #include "radio.h"
 
-Radio::Radio(ByteBuffer transmiterAddr, ByteBuffer receiverAddr) : m_radio(7,8)
+Radio::Radio(ByteBuffer transmiterAddr, ByteBuffer receiverAddr, uint8_t cePin, uint8_t csnPin) :
+    m_radio(cePin,csnPin)
 {
     m_transmiterAddr = transmiterAddr;
     m_receiverAddr   = receiverAddr;
@@ -8,10 +9,9 @@ Radio::Radio(ByteBuffer transmiterAddr, ByteBuffer receiverAddr) : m_radio(7,8)
 
 Radio::~Radio()
 {
-
 }
 
-void Radio::start()
+void Radio::init()
 {
     m_radio.begin();
     m_radio.openWritingPipe(m_transmiterAddr.ptr());

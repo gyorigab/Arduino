@@ -6,6 +6,10 @@
 class HashMap final
 {
 public:
+
+    /**
+    * \brief Key-value pair of one hashmap array record
+    */
     struct Record
     {
         ByteBuffer m_key;
@@ -14,6 +18,9 @@ public:
         Record() : m_key(ByteBuffer()), m_value(ByteBuffer()){}
         Record(ByteBuffer key, ByteBuffer value) : m_key(key), m_value(value){}
 
+        /**
+        * \brief Assigment operator overloading
+        */
         Record &operator=(const Record &src)
         {
             if (&src != this)
@@ -24,6 +31,9 @@ public:
             return *this;
         }
 
+        /**
+        * \brief Copy constructor
+        */
         Record(const Record &src)
         {
             m_key = src.m_key;
@@ -31,6 +41,9 @@ public:
         }
     };
 
+    /**
+    * \brief Build hash map array (implicit count of records are 16)
+    */
     HashMap(size_t capacity = 16) : m_capacity(capacity), m_size(0)
     {
         TRACING(INF);
@@ -43,6 +56,9 @@ public:
         clear();
     }
 
+    /**
+    * \brief Assigment operator overloading
+    */
     HashMap &operator=(const HashMap &src)
     {
         if (&src != this)
@@ -62,6 +78,9 @@ public:
         return *this;
     }
 
+    /**
+    * \brief Copy constructor
+    */
     HashMap(const HashMap &src)
     {
         m_size = src.m_size;
@@ -74,11 +93,24 @@ public:
         }
     }
 
+    /**
+    * \brief Get value of given key (operator overload)
+    *
+    * \param byte stream which represents key
+    * \return byte stream data of given key
+    */
     ByteBuffer operator[](const ByteBuffer &key) const
     {
         return getValue(key);
     }
 
+    /**
+    * \brief Insert pair of data key-value
+    *
+    * \param byte stream of key
+    * \param byte stream of data
+    * \return ture if record was successfuly inserted
+    */
     bool insert(const ByteBuffer &key, const ByteBuffer &value)
     {
         if(!full() && !exists(key))
@@ -90,6 +122,12 @@ public:
         return false;
     }
 
+    /**
+    * \brief Check if given key exists in current hasmap array
+    *
+    * \param byte stream of key
+    * \return ture if key exists
+    */
     bool exists(const ByteBuffer &key) const
     {
         for(int i = 0; i < m_size; i++)
@@ -102,6 +140,12 @@ public:
         return false;
     }
 
+    /**
+    * \brief Get value of given key
+    *
+    * \param byte stream which represents key
+    * \return byte stream data of given key
+    */
     ByteBuffer getValue(const ByteBuffer &key) const
     {
         for(int i=0; i < m_size; i++)
@@ -114,6 +158,12 @@ public:
         return ByteBuffer();
     }
 
+    /**
+    * \brief Get value of given index
+    *
+    * \param index of the hashmap array (0..size-1)
+    * \return data of given index
+    */
     ByteBuffer getValue(size_t index) const
     {
         if( index < m_size )
@@ -123,6 +173,12 @@ public:
         return ByteBuffer();
     }
 
+    /**
+    * \brief Get key of given index
+    *
+    * \param index of the hashmap array (0..size-1)
+    * \return key of given index
+    */
     ByteBuffer getKey(size_t index) const
     {
         if( index < m_size )
@@ -132,26 +188,52 @@ public:
         return ByteBuffer();
     }
 
+    /**
+    * \brief Get size of current hashmap array
+    *
+    * \return actual size of hashmap array
+    */
     size_t size() const
     {
         return m_size;
     }
 
+
+    /**
+    * \brief Get capacity of current hashmap array
+    *
+    * \return actual capacity of hashmap array
+    */
     size_t capacity() const
     {
         return m_capacity;
     }
 
+    /**
+    * \brief Check if current hashmap array is empty
+    *
+    * \return true if it is empty
+    */
     bool empty() const
     {
         return m_size > 0 ? false : true;
     }
 
+
+    /**
+    * \brief Check if current hashmap array is full
+    *
+    * \return true if it is full
+    */
     bool full() const
     {
         return !(m_size < m_capacity);
     }
 
+    /**
+    * \brief Clear current hashmap array
+
+    */
     void clear()
     {
         if(m_records != NULL)
