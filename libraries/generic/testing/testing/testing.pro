@@ -23,6 +23,7 @@ SOURCES += main.cpp \
         ../../trace.cpp\
         ../../../quadcopter/quadcopter.cpp\
         ../../../quadcopter/controlerdata.cpp\
+        ../../../quadcopter/motor.cpp\
         ../../../controler/controler.cpp\
         ../../../controler/controlermessage.cpp\
         ../../../controler/joystick.cpp\
@@ -38,6 +39,7 @@ HEADERS += \
     ../../trace.h\
     ../../../quadcopter/quadcopter.h\
     ../../../quadcopter/controlerdata.h\
+    ../../../quadcopter/motor.h\
     ../../../controler/controler.h\
     ../../../controler/controlermessage.h\
     ../../../controler/joystick.h\
