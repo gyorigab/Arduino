@@ -7,7 +7,7 @@
 class ControlerData final
 {
 public:
-    struct JoystickData
+    struct Data
     {
         int upper;
         int lower;
@@ -16,7 +16,7 @@ public:
 
         bool key;
 
-        JoystickData() : upper(0), lower(0), left(0), right(0), key(false) {}
+        Data() : upper(0), lower(0), left(0), right(0), key(false) {}
     };
 
     ControlerData(const Message &msg);
@@ -26,12 +26,12 @@ public:
     void readDirectionMessage(const Message &msg);
     void readThrottleMessage(const Message &msg);
 
-    JoystickData getDirectionData(){return m_directionData;}
-    JoystickData getThrottleData(){return m_throttleData;}
+    const Data& getDirectionData() const { return m_directionData; }
+    const Data& getThrottleData() const { return m_throttleData; }
 
 private:
-    JoystickData m_directionData;
-    JoystickData m_throttleData;
+    Data m_directionData;
+    Data m_throttleData;
 };
 
 #endif
