@@ -24,6 +24,7 @@ SOURCES += main.cpp \
         ../../../quadcopter/quadcopter.cpp\
         ../../../quadcopter/controlerdata.cpp\
         ../../../quadcopter/motor.cpp\
+        ../../../quadcopter/gyroscope.cpp\
         ../../../controler/controler.cpp\
         ../../../controler/controlermessage.cpp\
         ../../../controler/joystick.cpp\
@@ -40,6 +41,7 @@ HEADERS += \
     ../../../quadcopter/quadcopter.h\
     ../../../quadcopter/controlerdata.h\
     ../../../quadcopter/motor.h\
+    ../../../quadcopter/gyroscope.h\
     ../../../controler/controler.h\
     ../../../controler/controlermessage.h\
     ../../../controler/joystick.h\
