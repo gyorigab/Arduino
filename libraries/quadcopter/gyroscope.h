@@ -19,17 +19,17 @@ public:
     };
 
     void init();
-
-    void obtainRawData();
-
-    Angle getAcclerationAngle();
-    Angle getGyroscopeAngle();
-    Angle getTotalAngle();
+    Angle getAngle();
 
     double getTemperature();
 
 
 private:
+
+    void obtainRawData();
+
+    Angle getAcclerationAngle();
+    Angle getGyroscopeAngle();
 
     static const int ADDRESS  = 0x68;
     static const int PWR_MGMT_REGISTER = 0x6B;

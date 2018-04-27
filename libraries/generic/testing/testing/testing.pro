@@ -21,6 +21,7 @@ SOURCES += main.cpp \
         ../../message.cpp\
         ../../radio.cpp\
         ../../trace.cpp\
+        ../../utils.cpp\
         ../../../quadcopter/quadcopter.cpp\
         ../../../quadcopter/controlerdata.cpp\
         ../../../quadcopter/motor.cpp\
@@ -38,6 +39,7 @@ HEADERS += \
     ../../message.h \
     ../../radio.h\
     ../../trace.h\
+    ../../utils.h\
     ../../../quadcopter/quadcopter.h\
     ../../../quadcopter/controlerdata.h\
     ../../../quadcopter/motor.h\

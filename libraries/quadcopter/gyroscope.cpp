@@ -1,4 +1,5 @@
 #include "gyroscope.h"
+#include "utils.h"
 
 typedef Gyroscope::Angle Angle;
 
@@ -44,22 +45,49 @@ void Gyroscope::obtainRawData()
 
 Angle Gyroscope::getAcclerationAngle()
 {
+    Angle angle;
+    const double sensitivity = 16384.0;
 
+    double accX = double(m_accelerationX) / sensitivity;
+    double accY = double(m_accelerationY) / sensitivity;
+    double accZ = double(m_accelerationZ) / sensitivity;
+
+    angle.X = atan(accY / sqrt(pow(accX,2) + pow(accZ,2)));
+    angle.Y = atan(-1 * accX / sqrt(pow(accY,2) + pow(accZ,2)));
+
+    // convert radians to degrees
+    angle.X = Utils::radToDeg(angle.X);
+    angle.Y = Utils::radToDeg(angle.Y);
+
+    return angle;
 }
 
 Angle Gyroscope::getGyroscopeAngle()
 {
+    Angle angle;
 
+    const int ratio = 131.0;
+
+    angle.X = double(m_gyroscopeX) / ratio;
+    angle.Y = double(m_gyroscopeY) / ratio;
+
+    return angle;
 }
 
-Angle Gyroscope::getTotalAngle()
+Angle Gyroscope::getAngle()
 {
+    Angle angle;
+    obtainRawData();
 
+    return angle;
 }
 
 double Gyroscope::getTemperature()
 {
+    obtainRawData();
 
+    // Temperature in degrees of celsius
+    return double(m_temperature) / 340.0 + 36.53;
 }
 
 
