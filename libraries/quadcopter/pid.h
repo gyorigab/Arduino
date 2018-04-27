@@ -2,6 +2,7 @@
 #define PID_H
 
 #include "timer.h"
+#include "angle.h"
 
 class Pid
 {
@@ -20,16 +21,20 @@ public:
     ~Pid();
 
     void init();
-    Data getPidData();
+    Angle getPidCorrection(const Angle &currentAngle,const Angle &desiredAngle );
 
 private:
     static const double KP = 3.55;
     static const double KI = 0.005;
     static const double KD = 2.05;
 
-    double m_p;
-    double m_i;
-    double m_d;
+    Angle m_p;
+    Angle m_i;
+    Angle m_d;
+
+    Angle m_previousError;
+
+    Timer m_timer;
 
 };
 

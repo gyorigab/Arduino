@@ -141,7 +141,7 @@ Angle Gyroscope::complementaryFilter(const Angle &totalAngle, const Angle &accAn
 
     // High-pass filtering of gyroscope. Low-pass filtering of accelerometer
     // 98% of gyro angle data and 2% of accelerometer angle data
-    Angle angle = totalAngle * highPass + accAngle * lowPass;
+    Angle angle = highPass * totalAngle + lowPass * accAngle;
 
     return angle;
 }

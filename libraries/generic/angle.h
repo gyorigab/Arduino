@@ -32,7 +32,10 @@ public:
     void toRad(){}
 
     friend Angle operator+(const Angle &a, const Angle &b);
+    friend Angle operator-(const Angle &a, const Angle &b);
     friend Angle operator*(const Angle &a, double b);
+    friend Angle operator*(double b, const Angle &a);
+    friend Angle operator/(const Angle &a, double b);
 
 
 private:
