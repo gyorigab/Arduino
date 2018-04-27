@@ -8,7 +8,7 @@ Gyroscope::Gyroscope()
     m_accelerationX = m_accelerationY = m_accelerationZ = 0;
     m_temperature = 0;
 
-    m_totalAngle.X = m_totalAngle.Y = 0;
+    m_totalAngle.setAngle(0.0,0.0);
 }
 
 Gyroscope::~Gyroscope()
@@ -66,8 +66,8 @@ Angle Gyroscope::getAcclerationAngle()
     angleY = atan(-1 * accX / sqrt(pow(accY,2) + pow(accZ,2)));
 
     // Inclintation angle [deg]
-    angleX = Utils::radToDeg(angle.X);
-    angleY = Utils::radToDeg(angle.Y);
+    angleX = Utils::radToDeg(angleX);
+    angleY = Utils::radToDeg(angleY);
 
     TRACE_VAR("Acceleration angle X: ", angleX, DBG);
     TRACE_VAR("Acceleration angle Y: ", angleY, DBG);
@@ -109,8 +109,8 @@ Angle Gyroscope::getAngle()
     double elapsedTime = m_timer.getElapsedTime();
 
     TRACE_VAR("Elapsed time: ", elapsedTime,    DBG);
-    TRACE_VAR("Prev angle X: ", m_totalAngle.X, DBG);
-    TRACE_VAR("Prev angle Y: ", m_totalAngle.Y, DBG);
+    TRACE_VAR("Prev angle X: ", m_totalAngle.getX(), DBG);
+    TRACE_VAR("Prev angle Y: ", m_totalAngle.getY(), DBG);
 
     // Current angle is equal to previous obtained angle plus
     // angular velocity (degrees/second)

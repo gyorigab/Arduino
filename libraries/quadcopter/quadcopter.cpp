@@ -36,8 +36,8 @@ ByteBuffer Quadcopter::go()
 
     Angle angle = m_gyroscope.getAngle();
 
-    TRACE_VAR("Angle X: ", angle.X, DBG);
-    TRACE_VAR("Angle Y: ", angle.Y, DBG);
+    TRACE_VAR("Angle X: ", angle.getX(), DBG);
+    TRACE_VAR("Angle Y: ", angle.getY(), DBG);
 
     return p.getPayload();
 }
