@@ -1,6 +1,8 @@
 #ifndef PID_H
 #define PID_H
 
+#include "timer.h"
+
 class Pid
 {
 public:
@@ -18,11 +20,12 @@ public:
     ~Pid();
 
     void init();
+    Data getPidData();
 
 private:
-    double m_kp;
-    double m_ki;
-    double m_kd;
+    static const double KP = 3.55;
+    static const double KI = 0.005;
+    static const double KD = 2.05;
 
     double m_p;
     double m_i;

@@ -22,6 +22,8 @@ SOURCES += main.cpp \
         ../../radio.cpp\
         ../../trace.cpp\
         ../../utils.cpp\
+        ../../timer.cpp\
+        ../../angle.cpp\
         ../../../quadcopter/quadcopter.cpp\
         ../../../quadcopter/controlerdata.cpp\
         ../../../quadcopter/motor.cpp\
@@ -42,6 +44,8 @@ HEADERS += \
     ../../radio.h\
     ../../trace.h\
     ../../utils.h\
+    ../../timer.h\
+    ../../angle.h\
     ../../../quadcopter/quadcopter.h\
     ../../../quadcopter/controlerdata.h\
     ../../../quadcopter/motor.h\

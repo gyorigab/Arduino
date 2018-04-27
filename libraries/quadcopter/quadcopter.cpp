@@ -2,8 +2,7 @@
 #include "packet.h"
 #include "trace.h"
 #include "controlerdata.h"
-
-typedef Gyroscope::Angle Angle;
+#include "angle.h"
 
 const byte address[][6] = {"00001","00002"};
 

@@ -3,21 +3,14 @@
 
 #include <Wire.h>
 #include <math.h>
+#include "timer.h"
+#include "angle.h"
 
 class Gyroscope
 {
 public:
     Gyroscope();
     ~Gyroscope();
-
-    struct Angle
-    {
-        double X;
-        double Y;
-
-        Angle() : X(0.0), Y(0.0) {}
-        ~Angle() {}
-    };
 
     /**
     * \brief Initialize gyroscope object, open reading and writing register
@@ -68,13 +61,6 @@ private:
     */
     Angle complementaryFilter(const Angle &prevAngle, const Angle &accAngle );
 
-    /**
-    * \brief Function compute elapsed time between two last call of this function
-    *
-    * \return elpased time in [s]
-    */
-    double getElapsedTime();
-
     static const int ADDRESS  = 0x68;
     static const int PWR_MGMT_REGISTER = 0x6B;
     static const int ACCEL_XOUT_REGISTER = 0x3B;
@@ -91,8 +77,8 @@ private:
     int16_t m_temperature;
 
     Angle m_totalAngle;
-    double m_timePrev;
-    double m_timeCurr;
+
+    Timer m_timer;
 };
 
 #endif

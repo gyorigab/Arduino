@@ -1,9 +1,6 @@
 #include "gyroscope.h"
 #include "utils.h"
 #include "trace.h"
-#include <Arduino.h>
-
-typedef Gyroscope::Angle Angle;
 
 Gyroscope::Gyroscope()
 {
@@ -12,9 +9,6 @@ Gyroscope::Gyroscope()
     m_temperature = 0;
 
     m_totalAngle.X = m_totalAngle.Y = 0;
-
-    m_timePrev = 0;
-    m_timeCurr = millis();
 }
 
 Gyroscope::~Gyroscope()
@@ -28,6 +22,8 @@ void Gyroscope::init()
     Wire.write(PWR_MGMT_REGISTER);
     Wire.write(0);
     Wire.endTransmission(true);
+
+    m_timer.init();
 }
 
 void Gyroscope::obtainRawData()
@@ -54,7 +50,9 @@ Angle Gyroscope::getAcclerationAngle()
 {
     TRACING(INF);
 
-    Angle angle;
+    double angleX = 0.0;
+    double angleY = 0.0;
+
     // 1g = 16384.0 - defined by MPU6050
     const double gravity = 16384.0;
 
@@ -64,36 +62,37 @@ Angle Gyroscope::getAcclerationAngle()
     double accZ = double(m_accelerationZ) / gravity;
 
     // Inclination angle of the IMU [rad]
-    angle.X = atan(accY / sqrt(pow(accX,2) + pow(accZ,2)));
-    angle.Y = atan(-1 * accX / sqrt(pow(accY,2) + pow(accZ,2)));
+    angleX = atan(accY / sqrt(pow(accX,2) + pow(accZ,2)));
+    angleY = atan(-1 * accX / sqrt(pow(accY,2) + pow(accZ,2)));
 
     // Inclintation angle [deg]
-    angle.X = Utils::radToDeg(angle.X);
-    angle.Y = Utils::radToDeg(angle.Y);
+    angleX = Utils::radToDeg(angle.X);
+    angleY = Utils::radToDeg(angle.Y);
 
-    TRACE_VAR("Acceleration angle X: ", angle.X, DBG);
-    TRACE_VAR("Acceleration angle Y: ", angle.Y, DBG);
+    TRACE_VAR("Acceleration angle X: ", angleX, DBG);
+    TRACE_VAR("Acceleration angle Y: ", angleY, DBG);
     TRACE_VAR("Acceleration angle Z: ", accZ   , DBG);
 
-    return angle;
+    return Angle(angleX, angleY);
 }
 
 Angle Gyroscope::getGyroscopeAngle()
 {
     TRACING(INF);
 
-    Angle angle;
+    double angleX = 0.0;
+    double angleY = 0.0;
 
     // Ratio defined by MPU6050
     const int ratio = 131.0;
 
-    angle.X = double(m_gyroscopeX) / ratio;
-    angle.Y = double(m_gyroscopeY) / ratio;
+    angleX = double(m_gyroscopeX) / ratio;
+    angleY = double(m_gyroscopeY) / ratio;
 
-    TRACE_VAR("Gyroscope angle X: ", angle.X, DBG);
-    TRACE_VAR("Gyroscope angle Y: ", angle.Y, DBG);
+    TRACE_VAR("Gyroscope angle X: ", angleX, DBG);
+    TRACE_VAR("Gyroscope angle Y: ", angleY, DBG);
 
-    return angle;
+    return Angle(angleX, angleY);
 }
 
 Angle Gyroscope::getAngle()
@@ -102,12 +101,15 @@ Angle Gyroscope::getAngle()
 
     obtainRawData();
 
+    double totalAngleX = 0.0;
+    double totalAngleY = 0.0;
+
     // Get gyro and acc angle
     Angle accAngle = getAcclerationAngle();
     Angle gyrAngle = getGyroscopeAngle();
 
     // Elapsed time in seconds
-    double elapsedTime = getElapsedTime();
+    double elapsedTime = m_timer.getElapsedTime();
 
     TRACE_VAR("Elapsed time: ", elapsedTime,    DBG);
     TRACE_VAR("Prev angle X: ", m_totalAngle.X, DBG);
@@ -115,14 +117,16 @@ Angle Gyroscope::getAngle()
 
     // Current angle is equal to previous obtained angle plus
     // angular velocity (degrees/second)
-    m_totalAngle.X = m_totalAngle.X + gyrAngle.X * elapsedTime;
-    m_totalAngle.Y = m_totalAngle.Y + gyrAngle.Y * elapsedTime;
+    totalAngleX = m_totalAngle.getX() + gyrAngle.getX() * elapsedTime;
+    totalAngleY = m_totalAngle.getY() + gyrAngle.getY() * elapsedTime;
+
+    m_totalAngle.setAngle(totalAngleX, totalAngleY);
 
     // Total angle obtained from complementary filter
     m_totalAngle = complementaryFilter(m_totalAngle, accAngle);
 
-    TRACE_VAR("Curr angle X: ", m_totalAngle.X, DBG);
-    TRACE_VAR("Curr angle Y: ", m_totalAngle.Y, DBG);
+    TRACE_VAR("Curr angle X: ", m_totalAngle.getX(), DBG);
+    TRACE_VAR("Curr angle Y: ", m_totalAngle.getY(), DBG);
 
     return m_totalAngle;
 }
@@ -137,7 +141,8 @@ double Gyroscope::getTemperature()
 
 Angle Gyroscope::complementaryFilter(const Angle &totalAngle, const Angle &accAngle )
 {
-    Angle angle;
+    double angleX = 0.0;
+    double angleY = 0.0;
 
     // low pass filter values
     const double highPass = 0.98;
@@ -145,16 +150,8 @@ Angle Gyroscope::complementaryFilter(const Angle &totalAngle, const Angle &accAn
 
     // High-pass filtering of gyroscope. Low-pass filtering of accelerometer
     // 98% of gyro angle data and 2% of accelerometer angle data
-    angle.X = highPass * totalAngle.X + lowPass * accAngle.X;
-    angle.Y = highPass * totalAngle.Y + lowPass * accAngle.Y;
+    angleX = highPass * totalAngle.getX() + lowPass * accAngle.getX();
+    angleY = highPass * totalAngle.getY() + lowPass * accAngle.getY();
 
-    return angle;
-}
-
-double Gyroscope::getElapsedTime()
-{
-    m_timePrev = m_timeCurr;
-    m_timeCurr = millis();
-
-    return (m_timeCurr - m_timePrev) / 1000;
+    return Angle(angleX, angleY);
 }
