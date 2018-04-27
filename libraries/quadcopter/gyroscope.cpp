@@ -101,9 +101,6 @@ Angle Gyroscope::getAngle()
 
     obtainRawData();
 
-    double totalAngleX = 0.0;
-    double totalAngleY = 0.0;
-
     // Get gyro and acc angle
     Angle accAngle = getAcclerationAngle();
     Angle gyrAngle = getGyroscopeAngle();
@@ -117,10 +114,7 @@ Angle Gyroscope::getAngle()
 
     // Current angle is equal to previous obtained angle plus
     // angular velocity (degrees/second)
-    totalAngleX = m_totalAngle.getX() + gyrAngle.getX() * elapsedTime;
-    totalAngleY = m_totalAngle.getY() + gyrAngle.getY() * elapsedTime;
-
-    m_totalAngle.setAngle(totalAngleX, totalAngleY);
+    m_totalAngle = m_totalAngle + gyrAngle * elapsedTime;
 
     // Total angle obtained from complementary filter
     m_totalAngle = complementaryFilter(m_totalAngle, accAngle);
@@ -141,17 +135,13 @@ double Gyroscope::getTemperature()
 
 Angle Gyroscope::complementaryFilter(const Angle &totalAngle, const Angle &accAngle )
 {
-    double angleX = 0.0;
-    double angleY = 0.0;
-
     // low pass filter values
     const double highPass = 0.98;
     const double lowPass  = 0.02;
 
     // High-pass filtering of gyroscope. Low-pass filtering of accelerometer
     // 98% of gyro angle data and 2% of accelerometer angle data
-    angleX = highPass * totalAngle.getX() + lowPass * accAngle.getX();
-    angleY = highPass * totalAngle.getY() + lowPass * accAngle.getY();
+    Angle angle = totalAngle * highPass + accAngle * lowPass;
 
-    return Angle(angleX, angleY);
+    return angle;
 }
