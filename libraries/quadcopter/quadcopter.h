@@ -6,6 +6,7 @@
 #include "controlerdata.h"
 #include "message.h"
 #include "gyroscope.h"
+#include "pid.h"
 
 class Quadcopter
 {
@@ -18,6 +19,7 @@ public:
 private:
     Radio m_radio;
     Gyroscope m_gyroscope;
+    Pid m_pid;
 
     static const ByteBuffer RECV_ADDR;
     static const ByteBuffer TRAN_ADDR;

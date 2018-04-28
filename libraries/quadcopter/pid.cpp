@@ -36,6 +36,33 @@ Angle Pid::getPidCorrection(const Angle &currentAngle,const Angle &desiredAngle 
     // Derivative part
     m_d = KD * ((error - m_previousError)/m_timer.getElapsedTime());
 
-    return m_p + m_i + m_d;
+    Angle pid = m_p + m_i + m_d;
+
+    cutOverLimits(pid);
+
+    return pid;
+}
+
+void Pid::cutOverLimits(Angle &angle)
+{
+    if(angle.getX() > MAX)
+    {
+        angle.setX(MAX);
+    }
+
+    if(angle.getY() > MAX)
+    {
+        angle.setY(MAX);
+    }
+
+    if(angle.getX() < MIN)
+    {
+        angle.setX(MIN);
+    }
+
+    if(angle.getY() < MIN)
+    {
+        angle.setY(MIN);
+    }
 }
 

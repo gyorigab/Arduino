@@ -22,11 +22,15 @@ public:
 
     void init();
     Angle getPidCorrection(const Angle &currentAngle,const Angle &desiredAngle );
+    void cutOverLimits(Angle &angle);
 
 private:
     static const double KP = 3.55;
     static const double KI = 0.005;
     static const double KD = 2.05;
+
+    static const double MIN = -1000.0;
+    static const double MAX =  1000.0;
 
     Angle m_p;
     Angle m_i;

@@ -18,6 +18,7 @@ void Quadcopter::init()
 {
     m_radio.init();
     m_gyroscope.init();
+    m_pid.init();
 }
 
 ByteBuffer Quadcopter::go()
@@ -34,10 +35,14 @@ ByteBuffer Quadcopter::go()
 
     TRACE_BUF("Data Payload Received ",p.getPayload(), DBG );
 
-    Angle angle = m_gyroscope.getAngle();
+    Angle currentDronAngle = m_gyroscope.getAngle();
 
-    TRACE_VAR("Angle X: ", angle.getX(), DBG);
-    TRACE_VAR("Angle Y: ", angle.getY(), DBG);
+    TRACE_VAR("Angle X: ", currentDronAngle.getX(), DBG);
+    TRACE_VAR("Angle Y: ", currentDronAngle.getY(), DBG);
+
+    // TODO for test purposes just get drone to horizontal position
+    Angle desriedDronAngle(0.0, 0.0);
+    Angle pid = m_pid.getPidCorrection(currentDronAngle, desriedDronAngle);
 
     return p.getPayload();
 }
