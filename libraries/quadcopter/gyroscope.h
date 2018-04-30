@@ -2,6 +2,7 @@
 #define GYROSCOPE_H
 
 #include <Wire.h>
+#include <math.h>
 
 class Gyroscope
 {
@@ -45,7 +46,6 @@ private:
     int16_t m_gyroscopeZ;
 
     int16_t m_temperature;
-
-}
+};
 
 #endif
