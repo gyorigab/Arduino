@@ -1,3 +1,5 @@
+#include <Servo.h>
+
 #include <radio.h>
 #include <quadcopter.h>
 
