@@ -23,5 +23,4 @@ void setup()
 void loop() 
 {
   ByteBuffer stream = q.go();
-  delay(500);
 }

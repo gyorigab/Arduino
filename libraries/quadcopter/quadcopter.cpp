@@ -24,7 +24,7 @@ void Quadcopter::init()
 ByteBuffer Quadcopter::go()
 {
     TRACE_FUNCTION();
-    TRACING(DBG);
+    TRACING(INF);
 
     ByteBuffer bb = m_radio.read();
     Packet p = decode(bb);
@@ -33,12 +33,12 @@ ByteBuffer Quadcopter::go()
 
     ControlerData cdata(msg);
 
-    TRACE_BUF("Data Payload Received",p.getPayload(), DBG );
+    TRACE_BUF("Data Payload Received ",p.getPayload(), DBG );
 
     Angle angle = m_gyroscope.getAngle();
 
-    TRACE_VAR("Gyro angle X: ", angle.X, DBG);
-    TRACE_VAR("Gyro angle Y: ", angle.Y, DBG);
+    TRACE_VAR("Angle X: ", angle.X, DBG);
+    TRACE_VAR("Angle Y: ", angle.Y, DBG);
 
     return p.getPayload();
 }

@@ -8,7 +8,7 @@ ControlerData::ControlerData(const Message &msg)
 void ControlerData::readMessage(const Message &msg)
 {
     TRACE_FUNCTION();
-    TRACING(INF);
+    TRACING(ERR);
 
     bool hasDirectionData = msg.has(Message::Direction);
     bool hasThrottleData  = msg.has(Message::Throttle);

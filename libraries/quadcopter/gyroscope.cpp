@@ -55,7 +55,7 @@ Angle Gyroscope::getAcclerationAngle()
     TRACING(INF);
 
     Angle angle;
-    const double sensitivity = 16384.0;
+    const double sensitivity = 16384.0; // 1g = 16384.0
 
     double accX = double(m_accelerationX) / sensitivity;
     double accY = double(m_accelerationY) / sensitivity;
@@ -102,6 +102,7 @@ Angle Gyroscope::getAngle()
     Angle accAngle = getAcclerationAngle();
     Angle gyrAngle = getGyroscopeAngle();
 
+    // low pass filter values
     const double filterPart1 = 0.98;
     const double filterPart2 = 0.02;
 
