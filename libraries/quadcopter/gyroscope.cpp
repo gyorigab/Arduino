@@ -102,14 +102,12 @@ Angle Gyroscope::getAngle()
 
     obtainRawData();
 
+    // Get gyro and acc angle
     Angle accAngle = getAcclerationAngle();
     Angle gyrAngle = getGyroscopeAngle();
 
-    m_timePrev = m_timeCurr;
-    m_timeCurr = millis();
-
     // Elapsed time in seconds
-    double elapsedTime = (m_timeCurr - m_timePrev) / 1000;
+    double elapsedTime = getElapsedTime();
 
     TRACE_VAR("Elapsed time: ", elapsedTime,    DBG);
     TRACE_VAR("Prev angle X: ", m_totalAngle.X, DBG);
@@ -153,3 +151,10 @@ Angle Gyroscope::complementaryFilter(const Angle &totalAngle, const Angle &accAn
     return angle;
 }
 
+double Gyroscope::getElapsedTime()
+{
+    m_timePrev = m_timeCurr;
+    m_timeCurr = millis();
+
+    return (m_timeCurr - m_timePrev) / 1000;
+}
