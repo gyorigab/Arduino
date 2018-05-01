@@ -70,7 +70,7 @@ Angle Gyroscope::getAcclerationAngle()
 
     TRACE_VAR("Acceleration angle X: ", angle.X, DBG);
     TRACE_VAR("Acceleration angle Y: ", angle.Y, DBG);
-    TRACE_VAR("Acceleration angle Z: ", angle.Z, DBG);
+    TRACE_VAR("Acceleration angle Z: ", accZ   , DBG);
 
 
     return angle;
@@ -95,6 +95,8 @@ Angle Gyroscope::getGyroscopeAngle()
 
 Angle Gyroscope::getAngle()
 {
+    TRACING(INF);
+
     obtainRawData();
 
     Angle accAngle = getAcclerationAngle();
@@ -108,8 +110,16 @@ Angle Gyroscope::getAngle()
 
     double elapsedTime = (m_timeCurr - m_timePrev) / 1000;
 
+    TRACE_VAR("Elapsed time: ", elapsedTime, DBG);
+
+    TRACE_VAR("Prev angle X: ", m_totalAngle.X, DBG);
+    TRACE_VAR("Prev angle Y: ", m_totalAngle.Y, DBG);
+
     m_totalAngle.X = filterPart1 * (m_totalAngle.X + gyrAngle.X * elapsedTime) + filterPart2 * accAngle.X;
     m_totalAngle.Y = filterPart1 * (m_totalAngle.Y + gyrAngle.Y * elapsedTime) + filterPart2 * accAngle.Y;
+
+    TRACE_VAR("Curr angle X: ", m_totalAngle.X, DBG);
+    TRACE_VAR("Curr angle Y: ", m_totalAngle.Y, DBG);
 
     return m_totalAngle;
 }
