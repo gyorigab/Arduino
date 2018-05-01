@@ -24,13 +24,13 @@ public:
 
     double getTemperature();
 
-
 private:
 
     void obtainRawData();
 
     Angle getAcclerationAngle();
     Angle getGyroscopeAngle();
+    Angle complementaryFilter(const Angle &prevAngle, const Angle &accAngle );
 
     static const int ADDRESS  = 0x68;
     static const int PWR_MGMT_REGISTER = 0x6B;
