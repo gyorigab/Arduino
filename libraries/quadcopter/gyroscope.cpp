@@ -1,5 +1,6 @@
 #include "gyroscope.h"
 #include "utils.h"
+#include "trace.h"
 #include <Arduino.h>
 
 typedef Gyroscope::Angle Angle;
@@ -51,6 +52,8 @@ void Gyroscope::obtainRawData()
 
 Angle Gyroscope::getAcclerationAngle()
 {
+    TRACING(INF);
+
     Angle angle;
     const double sensitivity = 16384.0;
 
@@ -65,17 +68,25 @@ Angle Gyroscope::getAcclerationAngle()
     angle.X = Utils::radToDeg(angle.X);
     angle.Y = Utils::radToDeg(angle.Y);
 
+    TRACE_VAR("Acceleration angle X: ", angle.X, DBG);
+    TRACE_VAR("Acceleration angle Y: ", angle.Y, DBG);
+
     return angle;
 }
 
 Angle Gyroscope::getGyroscopeAngle()
 {
+    TRACING(INF);
+
     Angle angle;
 
     const int ratio = 131.0;
 
     angle.X = double(m_gyroscopeX) / ratio;
     angle.Y = double(m_gyroscopeY) / ratio;
+
+    TRACE_VAR("Gyroscope angle X: ", angle.X, DBG);
+    TRACE_VAR("Gyroscope angle Y: ", angle.Y, DBG);
 
     return angle;
 }

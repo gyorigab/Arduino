@@ -35,7 +35,7 @@ private:
     static const int ADDRESS  = 0x68;
     static const int PWR_MGMT_REGISTER = 0x6B;
     static const int ACCEL_XOUT_REGISTER = 0x3B;
-    static const int TOTAL_REGISTERS = 14;
+    static const int TOTAL_REGISTERS = 6;
 
     int16_t m_accelerationX;
     int16_t m_accelerationY;

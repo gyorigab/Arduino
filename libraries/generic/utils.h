@@ -12,8 +12,6 @@ public:
 
 private:
 
-    static const double PI = 3.1415926;
-
 };
 
 #endif
