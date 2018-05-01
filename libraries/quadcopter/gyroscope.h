@@ -46,6 +46,10 @@ private:
     int16_t m_gyroscopeZ;
 
     int16_t m_temperature;
+
+    Angle m_totalAngle;
+    double m_timePrev;
+    double m_timeCurr;
 };
 
 #endif

@@ -3,6 +3,7 @@
 #include "trace.h"
 #include "controlerdata.h"
 
+typedef Gyroscope::Angle Angle;
 
 const byte address[][6] = {"00001","00002"};
 
@@ -17,6 +18,7 @@ Quadcopter::Quadcopter() : m_radio(RECV_ADDR, TRAN_ADDR)
 void Quadcopter::init()
 {
     m_radio.init();
+    m_gyroscope.init();
 }
 
 ByteBuffer Quadcopter::go()
@@ -32,6 +34,11 @@ ByteBuffer Quadcopter::go()
     ControlerData cdata(msg);
 
     TRACE_BUF("Data Payload Received",p.getPayload(), DBG );
+
+    Angle angle = m_gyroscope.getAngle();
+
+    TRACE_VAR("Gyro angle X: ", angle.X, DBG);
+    TRACE_VAR("Gyro angle Y: ", angle.Y, DBG);
 
     return p.getPayload();
 }

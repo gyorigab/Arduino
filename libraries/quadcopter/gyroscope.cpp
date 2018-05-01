@@ -1,5 +1,6 @@
 #include "gyroscope.h"
 #include "utils.h"
+#include <Arduino.h>
 
 typedef Gyroscope::Angle Angle;
 
@@ -8,6 +9,11 @@ Gyroscope::Gyroscope()
     m_gyroscopeX = m_gyroscopeY = m_gyroscopeZ = 0;
     m_accelerationX = m_accelerationY = m_accelerationZ = 0;
     m_temperature = 0;
+
+    m_totalAngle.X = m_totalAngle.Y = 0;
+
+    m_timePrev = 0;
+    m_timeCurr = millis();
 }
 
 Gyroscope::~Gyroscope()
@@ -76,10 +82,23 @@ Angle Gyroscope::getGyroscopeAngle()
 
 Angle Gyroscope::getAngle()
 {
-    Angle angle;
     obtainRawData();
 
-    return angle;
+    Angle accAngle = getAcclerationAngle();
+    Angle gyrAngle = getGyroscopeAngle();
+
+    const double filterPart1 = 0.98;
+    const double filterPart2 = 0.02;
+
+    m_timePrev = m_timeCurr;
+    m_timeCurr = millis();
+
+    double elapsedTime = (m_timeCurr - m_timePrev) / 1000;
+
+    m_totalAngle.X = filterPart1 * (m_totalAngle.X + gyrAngle.X * elapsedTime) + filterPart2 * accAngle.X;
+    m_totalAngle.Y = filterPart1 * (m_totalAngle.Y + gyrAngle.Y * elapsedTime) + filterPart2 * accAngle.Y;
+
+    return m_totalAngle;
 }
 
 double Gyroscope::getTemperature()
