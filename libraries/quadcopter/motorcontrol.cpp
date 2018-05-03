@@ -22,19 +22,37 @@ void MotorControl::throttle(const ControlerData& data)
     ControlerData::Data directionData = data.getDirectionData();
     ControlerData::Data throttleData = data.getThrottleData();
 
-    // TODO thottle down
-    m_throttle = throttleData.upper;
+    m_throttle = m_throttle + throttleData.upper;
+    m_throttle = m_throttle - throttleData.lower;
 
     int throttleNorth = directionData.upper;
     int throttleSouth = directionData.lower;
     int throttleEast  = directionData.right;
     int throttleWest  = directionData.left;
 
+    m_motorNorth.write(m_throttle);
+    m_motorSouth.write(m_throttle);
+    m_motorEast.write(m_throttle);
+    m_motorWest.write(m_throttle);
+}
+
+Angle MotorControl::direction(const ControlerData& data)
+{
+    ControlerData::Data directionData = data.getDirectionData();
+
+
+    int throttleNorth = directionData.upper;
+    int throttleSouth = directionData.lower;
+    int throttleEast  = directionData.right;
+    int throttleWest  = directionData.left;
+
+    // TODO transform data to angle
+
     // TODO Throttle all + direction must not be over 2000
-    m_motorNorth.write(m_throttle + throttleNorth);
-    m_motorSouth.write(m_throttle + throttleSouth);
-    m_motorEast.write(m_throttle  + throttleEast);
-    m_motorWest.write(m_throttle  + throttleWest);
+    m_motorNorth.write(m_throttle);
+    m_motorSouth.write(m_throttle);
+    m_motorEast.write(m_throttle);
+    m_motorWest.write(m_throttle);
 }
 
 void MotorControl::startEngines()

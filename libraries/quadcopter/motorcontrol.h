@@ -1,6 +1,7 @@
 #ifndef MOTORCONTROL_H
 #define MOTORCONTROL_H
 
+#include <Arduino.h>
 #include "motor.h"
 #include "controlerdata.h"
 #include "angle.h"
@@ -13,6 +14,7 @@ public:
 
     void init();
     void throttle(const ControlerData &data);
+    Angle direction(const ControlerData &data);
     void throttle(int t);
     void startEngines();
     void control(const Angle &angle);

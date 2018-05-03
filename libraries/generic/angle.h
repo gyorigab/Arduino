@@ -37,7 +37,6 @@ public:
     friend Angle operator*(double b, const Angle &a);
     friend Angle operator/(const Angle &a, double b);
 
-
 private:
 
     double m_X;
