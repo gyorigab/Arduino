@@ -21,6 +21,7 @@ void Motor::init()
 
     m_servo.attach(m_pwmPin, MIN, MAX);
 
+    m_servo.writeMicroseconds(MIN);
 }
 
 int Motor::cutOverLimits(int rawThrottle)

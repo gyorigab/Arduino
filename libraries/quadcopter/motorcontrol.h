@@ -3,6 +3,7 @@
 
 #include "motor.h"
 #include "controlerdata.h"
+#include "angle.h"
 
 class MotorControl final
 {
@@ -11,7 +12,10 @@ public:
     ~MotorControl();
 
     void init();
-    void drive(const ControlerData &data);
+    void throttle(const ControlerData &data);
+    void throttle(int t);
+    void startEngines();
+    void control(const Angle &angle);
 
 private:
 
@@ -19,6 +23,8 @@ private:
     Motor m_motorSouth;
     Motor m_motorWest;
     Motor m_motorEast;
+
+    int m_throttle;
 };
 
 #endif
