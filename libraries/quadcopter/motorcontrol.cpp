@@ -24,16 +24,15 @@ void MotorControl::throttle(const ControlerData& data)
     Data currentData = data.getThrottleData();
     Data previousData = m_previousControlerData.getThrottleData();
 
+    m_previousControlerData = data;
 
     m_throttle = m_throttle + (currentData.upper - previousData.upper);
-    m_throttle = m_throttle - (currentData.lower - previousData.lower) ;
+    m_throttle = m_throttle - (currentData.lower - previousData.lower);
 
     m_motorNorth.write(m_throttle);
     m_motorSouth.write(m_throttle);
     m_motorEast.write(m_throttle);
     m_motorWest.write(m_throttle);
-
-    m_previousControlerData.setThrottleData(currentData);
 }
 
 Angle MotorControl::direction(const ControlerData& data)
