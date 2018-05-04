@@ -14,8 +14,8 @@ public:
 
     ~Angle() {}
 
-    double getX(){return m_X;}
-    double getY(){return m_Y;}
+    double getX() const {return m_X;}
+    double getY() const {return m_Y;}
 
     void setX(double X){m_X = X;}
     void setY(double Y){m_Y = Y;}

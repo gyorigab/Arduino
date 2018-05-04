@@ -27,6 +27,9 @@ private:
     Motor m_motorEast;
 
     int m_throttle;
+
+    ControlerData m_previousControlerData;
+
 };
 
 #endif

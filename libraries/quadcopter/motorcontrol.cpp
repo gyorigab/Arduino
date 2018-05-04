@@ -1,5 +1,7 @@
 #include "motorcontrol.h"
 
+typedef ControlerData::Data Data;
+
 MotorControl::MotorControl(int northPwm, int southPwm, int eastPwm, int westPwm) :
     m_motorNorth(northPwm), m_motorSouth(southPwm), m_motorEast(eastPwm), m_motorWest(westPwm)
 {
@@ -19,21 +21,19 @@ void MotorControl::init()
 
 void MotorControl::throttle(const ControlerData& data)
 {
-    ControlerData::Data directionData = data.getDirectionData();
-    ControlerData::Data throttleData = data.getThrottleData();
+    Data currentData = data.getThrottleData();
+    Data previousData = m_previousControlerData.getThrottleData();
 
-    m_throttle = m_throttle + throttleData.upper;
-    m_throttle = m_throttle - throttleData.lower;
 
-    int throttleNorth = directionData.upper;
-    int throttleSouth = directionData.lower;
-    int throttleEast  = directionData.right;
-    int throttleWest  = directionData.left;
+    m_throttle = m_throttle + (currentData.upper - previousData.upper);
+    m_throttle = m_throttle - (currentData.lower - previousData.lower) ;
 
     m_motorNorth.write(m_throttle);
     m_motorSouth.write(m_throttle);
     m_motorEast.write(m_throttle);
     m_motorWest.write(m_throttle);
+
+    m_previousControlerData.setThrottleData(currentData);
 }
 
 Angle MotorControl::direction(const ControlerData& data)

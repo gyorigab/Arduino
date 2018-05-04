@@ -1,5 +1,8 @@
 #include "controlerdata.h"
 
+ControlerData::ControlerData()
+{}
+
 ControlerData::ControlerData(const Message &msg)
 {
     readMessage(msg);
