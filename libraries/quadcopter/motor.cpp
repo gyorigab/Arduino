@@ -61,7 +61,7 @@ void Motor::write(int inpThrottle)
         {
             m_lastThrottleVal += increment;
             m_servo.writeMicroseconds(m_lastThrottleVal);
-            delay(10);
+            //delay(10);
         }
     }
 }

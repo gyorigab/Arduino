@@ -7,6 +7,7 @@
 #include "message.h"
 #include "gyroscope.h"
 #include "pid.h"
+#include "motorcontrol.h"
 
 class Quadcopter
 {
@@ -20,9 +21,15 @@ private:
     Radio m_radio;
     Gyroscope m_gyroscope;
     Pid m_pid;
+    MotorControl m_motors;
 
     static const ByteBuffer RECV_ADDR;
     static const ByteBuffer TRAN_ADDR;
+
+    const int PWM_NORTH = 3;
+    const int PWM_SOUTH = 5;
+    const int PWM_EAST  = 6;
+    const int PWM_WEST  = 9;
 };
 
 #endif

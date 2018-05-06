@@ -9,7 +9,7 @@ const byte address[][6] = {"00001","00002"};
 const ByteBuffer Quadcopter::RECV_ADDR = ByteBuffer(address[0], sizeof(address[0]));
 const ByteBuffer Quadcopter::TRAN_ADDR = ByteBuffer(address[1], sizeof(address[1]));
 
-Quadcopter::Quadcopter() : m_radio(RECV_ADDR, TRAN_ADDR)
+Quadcopter::Quadcopter() : m_radio(RECV_ADDR, TRAN_ADDR), m_motors(PWM_NORTH, PWM_SOUTH, PWM_WEST, PWM_EAST)
 {
 
 }
@@ -19,6 +19,13 @@ void Quadcopter::init()
     m_radio.init();
     m_gyroscope.init();
     m_pid.init();
+    m_motors.init();
+
+    // Let the HW init
+    delay(1000);
+
+    // Start Engines
+    m_motors.startEngines();
 }
 
 ByteBuffer Quadcopter::go()
@@ -42,7 +49,10 @@ ByteBuffer Quadcopter::go()
 
     // TODO for test purposes just get drone to horizontal position
     Angle desriedDronAngle(0.0, 0.0);
+
     Angle pid = m_pid.getPidCorrection(currentDronAngle, desriedDronAngle);
+
+    m_motors.control(pid);
 
     return p.getPayload();
 }
