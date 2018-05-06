@@ -3,11 +3,15 @@
 #include "trace.h"
 #include "controlerdata.h"
 #include "angle.h"
+#include "motor.h"
 
 const byte address[][6] = {"00001","00002"};
 
 const ByteBuffer Quadcopter::RECV_ADDR = ByteBuffer(address[0], sizeof(address[0]));
 const ByteBuffer Quadcopter::TRAN_ADDR = ByteBuffer(address[1], sizeof(address[1]));
+
+Motor m1(3);
+Motor m2(5);
 
 Quadcopter::Quadcopter() : m_radio(RECV_ADDR, TRAN_ADDR), m_motors(PWM_NORTH, PWM_SOUTH, PWM_WEST, PWM_EAST)
 {
@@ -20,6 +24,9 @@ void Quadcopter::init()
     m_gyroscope.init();
     m_pid.init();
     m_motors.init();
+
+    //m1.init();
+    //m2.init();
 
     // Let the HW init
     delay(1000);
@@ -52,6 +59,10 @@ ByteBuffer Quadcopter::go()
 
     Angle pid = m_pid.getPidCorrection(currentDronAngle, desriedDronAngle);
 
+    TRACE_VAR("PID correction X: ", pid.getX(), INF);
+    TRACE_VAR("PID correction Y: ", pid.getY(), INF);
+
+    m_motors.throttle(1700);
     m_motors.control(pid);
 
     return p.getPayload();

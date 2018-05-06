@@ -72,8 +72,14 @@ void MotorControl::throttle(int t)
 
 void MotorControl::control(const Angle &angle)
 {
-    m_motorNorth.write(m_throttle + angle.getX());
-    m_motorSouth.write(m_throttle - angle.getX());
-    m_motorEast.write(m_throttle  + angle.getY());
-    m_motorWest.write(m_throttle  - angle.getY());
+
+    TRACING(DBG);
+
+    TRACE_VAR("THROTLE X: ", m_throttle + angle.getX(), DBG);
+    TRACE_VAR("THROTLE Y: ", m_throttle - angle.getX(), DBG);
+
+    m_motorNorth.write(m_throttle - angle.getX());
+    m_motorSouth.write(m_throttle + angle.getX());
+    m_motorEast.write(m_throttle  - angle.getY());
+    m_motorWest.write(m_throttle  + angle.getY());
 }
