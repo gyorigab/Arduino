@@ -25,6 +25,8 @@ public:
      */
     ControlerMessage& createThrottleMsg(const Joystick &joystick);
 
+    ByteBuffer isButtonPressed(const Joystick::Data &data) const;
+
      /**
      * \brief Method returns pointer to message which controls dron position
      * \return pointer to message

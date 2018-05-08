@@ -30,6 +30,8 @@ public:
     const Data& getDirectionData() const { return m_directionData; }
     const Data& getThrottleData() const { return m_throttleData; }
 
+    bool isButtonPressed(const ByteBuffer &button) const;
+
     void setDirectionData(const Data& data)
     {
         m_directionData.upper = data.upper;

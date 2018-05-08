@@ -15,11 +15,16 @@ public:
     void init();
     void throttle(const ControlerData &data);
     Angle direction(const ControlerData &data);
+    void startStopEngines(const ControlerData &data);
     void throttle(int t);
     void startEngines();
+    void stopEngines();
     void control(const Angle &angle);
 
 private:
+
+    static const int MOTOR_OFF   = 1000;
+    static const int MOTOR_START = 1300;
 
     Motor m_motorNorth;
     Motor m_motorSouth;

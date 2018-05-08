@@ -34,7 +34,8 @@ public:
         Up          = 0x55,
         Down        = 0x44,
         RotateLeft  = 0x4C,
-        RotateRight = 0x52
+        RotateRight = 0x52,
+        Button      = 0x42
     };
 
     /**

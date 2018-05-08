@@ -39,7 +39,6 @@ Angle MotorControl::direction(const ControlerData& data)
 {
     ControlerData::Data directionData = data.getDirectionData();
 
-
     int throttleNorth = directionData.upper;
     int throttleSouth = directionData.lower;
     int throttleEast  = directionData.right;
@@ -54,11 +53,35 @@ Angle MotorControl::direction(const ControlerData& data)
     m_motorWest.write(m_throttle);
 }
 
+void MotorControl::startStopEngines(const ControlerData &data)
+{
+    Data throttleData = data.getThrottleData();
+
+    if(throttleData.key == true)
+    {
+        if(m_throttle > MOTOR_OFF)
+        {
+            stopEngines();
+        }
+        else
+        {
+            startEngines();
+        }
+    }
+}
+
 void MotorControl::startEngines()
 {
-    m_throttle = 1300;
+    m_throttle = MOTOR_START;
     throttle(m_throttle);
 }
+
+void MotorControl::stopEngines()
+{
+    m_throttle = MOTOR_OFF;
+    throttle(m_throttle);
+}
+
 
 void MotorControl::throttle(int t)
 {
@@ -72,7 +95,6 @@ void MotorControl::throttle(int t)
 
 void MotorControl::control(const Angle &angle)
 {
-
     TRACING(DBG);
 
     TRACE_VAR("THROTLE X: ", m_throttle + angle.getX(), DBG);
