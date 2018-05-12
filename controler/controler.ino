@@ -21,5 +21,4 @@ void setup()
 void loop() 
 { 
   c.go();
-  delay(500);
 }

@@ -10,9 +10,6 @@ const byte address[][6] = {"00001","00002"};
 const ByteBuffer Quadcopter::RECV_ADDR = ByteBuffer(address[0], sizeof(address[0]));
 const ByteBuffer Quadcopter::TRAN_ADDR = ByteBuffer(address[1], sizeof(address[1]));
 
-Motor m1(3);
-Motor m2(5);
-
 Quadcopter::Quadcopter() : m_radio(RECV_ADDR, TRAN_ADDR), m_motors(PWM_NORTH, PWM_SOUTH, PWM_WEST, PWM_EAST)
 {
 
@@ -25,9 +22,6 @@ void Quadcopter::init()
     m_pid.init();
     m_motors.init();
 
-    //m1.init();
-    //m2.init();
-
     // Let the HW init
     delay(1000);
 
@@ -38,7 +32,7 @@ void Quadcopter::init()
 ByteBuffer Quadcopter::go()
 {
     TRACE_FUNCTION();
-    TRACING(INF);
+    TRACING(DBG);
 
     ByteBuffer bb = m_radio.read();
     Packet p = decode(bb);
@@ -65,5 +59,5 @@ ByteBuffer Quadcopter::go()
     m_motors.throttle(1700);
     m_motors.control(pid);
 
-    return p.getPayload();
+    return ByteBuffer();
 }

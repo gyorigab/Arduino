@@ -32,6 +32,7 @@ private:
     Motor m_motorEast;
 
     int m_throttle;
+    bool m_isForecedOff;
 
     ControlerData m_previousControlerData;
 

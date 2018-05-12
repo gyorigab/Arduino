@@ -55,7 +55,7 @@ private:
     int m_zeroY;   // analog Y axis value obtained in default position
 
     static const int MIN = 0;
-    static const int MAX = 100;
+    static const int MAX = 255;
 };
 
 #endif

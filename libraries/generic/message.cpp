@@ -7,6 +7,9 @@ Message::Message(uint8_t messageType) : m_messageType(messageType)
 
 Message::Message(const Packet& packet)
 {
+    TRACING(DBG);
+    TRACE_FUNCTION();
+
     if (!packet.getPayload().empty())
     {
        parsePacket(packet);
@@ -78,6 +81,9 @@ bool Message::isSeparator(uint8_t separator) const
 
 void Message::parsePacket(const Packet &packet)
 {
+    TRACING(DBG);
+    TRACE_FUNCTION();
+
     ByteBuffer buffer = packet.getPayload();
     ByteBuffer value;
     ByteBuffer key;
