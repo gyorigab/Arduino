@@ -2,7 +2,7 @@
 
 typedef ControlerData::Data Data;
 
-MotorControl::MotorControl(int northPwm, int southPwm, int eastPwm, int westPwm) :
+MotorControl::MotorControl(uint8_t northPwm, uint8_t southPwm, uint8_t eastPwm, uint8_t westPwm) :
     m_motorNorth(northPwm), m_motorSouth(southPwm), m_motorEast(eastPwm), m_motorWest(westPwm)
 {
     m_throttle = 0;

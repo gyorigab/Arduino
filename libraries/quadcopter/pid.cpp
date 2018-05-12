@@ -19,17 +19,17 @@ Angle Pid::getPidCorrection(const Angle &currentAngle,const Angle &desiredAngle 
 
     // Integral part must be provided separately
 
-    double iY = m_i.getY();
+    float iY = m_i.getY();
 
     if(-3 < error.getX() < 3)
     {
-        double iX = m_i.getX(); + (KI * error.getX());
+        float iX = m_i.getX(); + (KI * error.getX());
         m_i.setX(iX);
     }
 
     if(-3 < error.getY() < 3)
     {
-        double iY = m_i.getY(); + (KI * error.getY());
+        float iY = m_i.getY(); + (KI * error.getY());
         m_i.setY(iY);
     }
 

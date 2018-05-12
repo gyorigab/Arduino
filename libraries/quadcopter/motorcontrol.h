@@ -9,7 +9,7 @@
 class MotorControl final
 {
 public:
-    MotorControl(int northPwm, int southPwm, int eastPwm, int westPwm);
+    MotorControl(uint8_t northPwm, uint8_t southPwm, uint8_t eastPwm, uint8_t westPwm);
     ~MotorControl();
 
     void init();
@@ -23,15 +23,15 @@ public:
 
 private:
 
-    static const int MOTOR_OFF   = 1000;
-    static const int MOTOR_START = 1300;
+    static const uint16_t MOTOR_OFF   = 1000;
+    static const uint16_t MOTOR_START = 1300;
 
     Motor m_motorNorth;
     Motor m_motorSouth;
     Motor m_motorWest;
     Motor m_motorEast;
 
-    int m_throttle;
+    uint16_t m_throttle;
     bool m_isForecedOff;
 
     ControlerData m_previousControlerData;

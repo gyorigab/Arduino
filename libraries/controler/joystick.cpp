@@ -3,7 +3,7 @@
 
 typedef Joystick::Data Data;
 
-Joystick::Joystick(int pinX, int pinY, int pinKey)
+Joystick::Joystick(uint8_t pinX, uint8_t pinY, uint8_t pinKey)
 {
     m_pinX   = pinX;
     m_pinY   = pinY;

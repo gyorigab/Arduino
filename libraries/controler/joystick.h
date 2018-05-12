@@ -14,10 +14,10 @@ public:
     */
     struct Data
     {
-        int upper;
-        int lower;
-        int left;
-        int right;
+        uint8_t upper;
+        uint8_t lower;
+        uint8_t left;
+        uint8_t right;
 
         bool key;
 
@@ -30,7 +30,7 @@ public:
     * \param Analog arduino pin e.g. A0, A1... of Y axis data
     * \param Analog arduino pin e.g. A0, A1... of joystick button
     */
-    Joystick(int pinX, int pinY, int pinKey);
+    Joystick(uint8_t pinX, uint8_t pinY, uint8_t pinKey);
     ~Joystick();
 
     /**
@@ -55,7 +55,7 @@ private:
     int m_zeroY;   // analog Y axis value obtained in default position
 
     static const int MIN = 0;
-    static const int MAX = 255;
+    static const int MAX = 254;
 };
 
 #endif

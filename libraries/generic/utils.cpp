@@ -4,12 +4,12 @@
 Utils::Utils(){}
 Utils::~Utils(){}
 
-double Utils::radToDeg(double rad)
+float Utils::radToDeg(float rad)
 {
     return rad*(180.0/M_PI);
 }
 
-double Utils::degToRad(double deg)
+float Utils::degToRad(float deg)
 {
     return deg*(M_PI/180.0);
 }

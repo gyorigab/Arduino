@@ -26,10 +26,10 @@ private:
     static const ByteBuffer RECV_ADDR;
     static const ByteBuffer TRAN_ADDR;
 
-    static const int PWM_NORTH = 3;
-    static const int PWM_SOUTH = 5;
-    static const int PWM_EAST  = 6;
-    static const int PWM_WEST  = 9;
+    static const uint8_t PWM_NORTH = 3;
+    static const uint8_t PWM_SOUTH = 5;
+    static const uint8_t PWM_EAST  = 6;
+    static const uint8_t PWM_WEST  = 9;
 };
 
 #endif

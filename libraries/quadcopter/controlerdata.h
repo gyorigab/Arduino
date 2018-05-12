@@ -9,10 +9,10 @@ class ControlerData final
 public:
     struct Data
     {
-        int upper;
-        int lower;
-        int left;
-        int right;
+        uint8_t upper;
+        uint8_t lower;
+        uint8_t left;
+        uint8_t right;
 
         bool key;
 

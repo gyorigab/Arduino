@@ -50,16 +50,16 @@ Angle Gyroscope::getAcclerationAngle()
 {
     TRACING(INF);
 
-    double angleX = 0.0;
-    double angleY = 0.0;
+    float angleX = 0.0;
+    float angleY = 0.0;
 
     // 1g = 16384.0 - defined by MPU6050
-    const double gravity = 16384.0;
+    const float gravity = 16384.0;
 
     // Acceleration in axes [g]
-    double accX = double(m_accelerationX) / gravity;
-    double accY = double(m_accelerationY) / gravity;
-    double accZ = double(m_accelerationZ) / gravity;
+    float accX = float(m_accelerationX) / gravity;
+    float accY = float(m_accelerationY) / gravity;
+    float accZ = float(m_accelerationZ) / gravity;
 
     // Inclination angle of the IMU [rad]
     angleX = atan(accY / sqrt(pow(accX,2) + pow(accZ,2)));
@@ -80,14 +80,14 @@ Angle Gyroscope::getGyroscopeAngle()
 {
     TRACING(INF);
 
-    double angleX = 0.0;
-    double angleY = 0.0;
+    float angleX = 0.0;
+    float angleY = 0.0;
 
     // Ratio defined by MPU6050
     const int ratio = 131.0;
 
-    angleX = double(m_gyroscopeX) / ratio;
-    angleY = double(m_gyroscopeY) / ratio;
+    angleX = float(m_gyroscopeX) / ratio;
+    angleY = float(m_gyroscopeY) / ratio;
 
     TRACE_VAR("Gyroscope angle X: ", angleX, DBG);
     TRACE_VAR("Gyroscope angle Y: ", angleY, DBG);
@@ -106,7 +106,7 @@ Angle Gyroscope::getAngle()
     Angle gyrAngle = getGyroscopeAngle();
 
     // Elapsed time in seconds
-    double elapsedTime = m_timer.getElapsedTime();
+    float elapsedTime = m_timer.getElapsedTime();
 
     TRACE_VAR("Elapsed time: ", elapsedTime,    DBG);
     TRACE_VAR("Prev angle X: ", m_totalAngle.getX(), DBG);
@@ -130,14 +130,14 @@ double Gyroscope::getTemperature()
     obtainRawData();
 
     // Temperature in degrees of celsius
-    return double(m_temperature) / 340.0 + 36.53;
+    return float(m_temperature) / 340.0 + 36.53;
 }
 
 Angle Gyroscope::complementaryFilter(const Angle &totalAngle, const Angle &accAngle )
 {
     // low pass filter values
-    const double highPass = 0.98;
-    const double lowPass  = 0.02;
+    const float highPass = 0.98;
+    const float lowPass  = 0.02;
 
     // High-pass filtering of gyroscope. Low-pass filtering of accelerometer
     // 98% of gyro angle data and 2% of accelerometer angle data

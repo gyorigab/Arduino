@@ -6,23 +6,23 @@
 class Motor final
 {
 public:
-    explicit Motor(int pwmPin);
+    explicit Motor(uint8_t pwmPin);
     ~Motor();
 
     void init();
 
-    int cutOverLimits(int rawThrottle);
-    void write(int inpThrottle);
+    int cutOverLimits(int16_t rawThrottle);
+    void write(int16_t inpThrottle);
 
 
 private:
     Servo m_servo;
 
-    int m_pwmPin;
-    int m_lastThrottleVal;
+    uint8_t m_pwmPin;
+    int16_t m_lastThrottleVal;
 
-    static const int MIN = 1000;
-    static const int MAX = 2000;
+    static const int16_t MIN = 1000;
+    static const int16_t MAX = 2000;
 };
 
 #endif

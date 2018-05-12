@@ -11,9 +11,9 @@
 
 #define TRACE_FUNCTION() Log logFunction(__FUNCTION__,__FILE__, __LINE__)
 
-#define TRACE(message, verbosity)          Trace::print(message,verbosity)
-#define TRACE_VAR(message, var, verbosity) Trace::print(message, var, verbosity)
-#define TRACE_BUF(message, var, verbosity) Trace::printBuffer(message, var, verbosity)
+#define TRACE(message, verbosity)          Trace::print(F(message),verbosity)
+#define TRACE_VAR(message, var, verbosity) Trace::print(F(message), var, verbosity)
+#define TRACE_BUF(message, var, verbosity) Trace::printBuffer(F(message), var, verbosity)
 #define TRACING(verbosity)                 VerbositySetter verbSetter(verbosity)
 
 #define DBG Trace::DEBUG
@@ -132,9 +132,9 @@ public:
 #else   // Arduino
         Serial.print(verb);
         Serial.print(message);
-        Serial.print("Size: ");
+        Serial.print(F("Size: "));
         Serial.print(buff.size());
-        Serial.print(" Data: ");
+        Serial.print(F(" Data: "));
 
         for(int i=0; i<buff.size(); i++)
         {
@@ -142,7 +142,7 @@ public:
             Serial.print(' ');
         }
 
-        Serial.println("");
+        Serial.println(F(""));
         Serial.flush();
 #endif
     }
@@ -172,7 +172,7 @@ public:
 #ifdef GDEBUG
         std::cout << std::endl;
 #else
-        Serial.println("");
+        Serial.println(F(""));
         Serial.flush();
 #endif
     }
@@ -232,13 +232,13 @@ public:
         m_function(function), m_file(file), m_line(line)
     {
         m_depth++;
-        Trace::print("[ENTER] -> ", Trace::STACK);
+        Trace::print(F("[ENTER] -> "), Trace::STACK);
         print();
     }
 
     ~Log()
     {
-        Trace::print("[EXIT]  <- ", Trace::STACK);
+        Trace::print(F("[EXIT]  <- "), Trace::STACK);
         print();
         m_depth--;
     }
@@ -247,8 +247,8 @@ public:
     {
         space("#");
         Trace::print(m_function, Trace::STACK);
-        Trace::print(" file: ", m_file, Trace::STACK);
-        Trace::print(" line: ", m_line, Trace::STACK);
+        Trace::print(F(" file: "), m_file, Trace::STACK);
+        Trace::print(F(" line: "), m_line, Trace::STACK);
         Trace::newline(Trace::STACK);
     }
 

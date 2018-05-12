@@ -77,7 +77,6 @@ private:
     int16_t m_temperature;
 
     Angle m_totalAngle;
-
     Timer m_timer;
 };
 

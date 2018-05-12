@@ -7,30 +7,20 @@
 class Pid
 {
 public:
-    struct Data
-    {
-        int upper;
-        int lower;
-        int left;
-        int right;
-
-        Data() : upper(0), lower(0), left(0), right(0) {}
-    };
-
     Pid();
     ~Pid();
 
     void init();
-    Angle getPidCorrection(const Angle &currentAngle,const Angle &desiredAngle );
+    Angle getPidCorrection(const Angle &currentAngle, const Angle &desiredAngle);
     void cutOverLimits(Angle &angle);
 
 private:
-    static const double KP = 3.55;
-    static const double KI = 0.005;
-    static const double KD = 2.05;
+    static const float KP = 3.55;
+    static const float KI = 0.005;
+    static const float KD = 2.05;
 
-    static const double MIN = -1000.0;
-    static const double MAX =  1000.0;
+    static const float MIN = -1000.0;
+    static const float MAX =  1000.0;
 
     Angle m_p;
     Angle m_i;

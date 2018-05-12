@@ -7,8 +7,8 @@ public:
     Utils();
     ~Utils();
 
-    static double radToDeg(double rad);
-    static double degToRad(double deg);
+    static float radToDeg(float rad);
+    static float degToRad(float deg);
 
 private:
 

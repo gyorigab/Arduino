@@ -1,7 +1,7 @@
 #include "motor.h"
 #include <Arduino.h>
 
-Motor::Motor(int pwmPin) : m_pwmPin(pwmPin), m_lastThrottleVal(0)
+Motor::Motor(uint8_t pwmPin) : m_pwmPin(pwmPin), m_lastThrottleVal(0)
 {}
 
 Motor::~Motor()
@@ -24,7 +24,7 @@ void Motor::init()
     m_servo.writeMicroseconds(MIN);
 }
 
-int Motor::cutOverLimits(int rawThrottle)
+int Motor::cutOverLimits(int16_t rawThrottle)
 {
     if(rawThrottle < MIN)
     {
@@ -40,7 +40,7 @@ int Motor::cutOverLimits(int rawThrottle)
     }
 }
 
-void Motor::write(int inpThrottle)
+void Motor::write(int16_t inpThrottle)
 {
     // cut values which are over limits
     int throttle = cutOverLimits(inpThrottle);
