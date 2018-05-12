@@ -15,11 +15,19 @@
 #define TRACE_VAR(message, var, verbosity) Trace::print(F(message), var, verbosity)
 #define TRACE_BUF(message, var, verbosity) Trace::printBuffer(F(message), var, verbosity)
 #define TRACING(verbosity)                 VerbositySetter verbSetter(verbosity)
+#define TRACE_MEM()                        Trace::printFreeMemory()
 
 #define DBG Trace::DEBUG
 #define WRN Trace::WARNING
 #define INF Trace::INFO
 #define ERR Trace::ERROR
+
+#ifdef __arm__
+// should use uinstd.h to define sbrk but Due causes a conflict
+extern "C" char* sbrk(int incr);
+#else  // __ARM__
+extern char *__brkval;
+#endif  // __arm__
 
 class Trace
 {
@@ -29,6 +37,13 @@ public:
 	
      Trace(){}
     ~Trace(){}
+
+    static void printFreeMemory()
+    {
+        Serial.print(F("[INFO]    Free Memory: "));
+        Serial.print(freeMemory());
+        Serial.println(F(" bytes"));
+    }
 	
     template<typename T, typename V>
     static void print(T message, V var, Verbosity v = Trace::DEBUG)
@@ -202,6 +217,19 @@ public:
     static Verbosity getVerbosity() {return m_verbosity;}
 
 private:
+
+    static int freeMemory()
+    {
+        char top;
+        #ifdef __arm__
+        return &top - reinterpret_cast<char*>(sbrk(0));
+        #elif defined(CORE_TEENSY) || (ARDUINO > 103 && ARDUINO != 151)
+        return &top - __brkval;
+        #else  // __arm__
+        return __brkval ? &top - __brkval : &top - __malloc_heap_start;
+        #endif  // __arm__
+    }
+
     static Verbosity m_verbosity;
     static bool m_printCallStack;
     static bool m_printTrace;

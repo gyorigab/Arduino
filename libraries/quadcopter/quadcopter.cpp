@@ -56,8 +56,10 @@ ByteBuffer Quadcopter::go()
     TRACE_VAR("PID correction X: ", pid.getX(), INF);
     TRACE_VAR("PID correction Y: ", pid.getY(), INF);
 
-    m_motors.throttle(1700);
+    m_motors.throttle(cdata);
     m_motors.control(pid);
+
+    TRACE_MEM();
 
     return ByteBuffer();
 }

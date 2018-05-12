@@ -22,10 +22,16 @@ void MotorControl::init()
 
 void MotorControl::throttle(const ControlerData& data)
 {
-    if(!m_isForecedOff)
+    TRACING(DBG);
+
+    // TODO testing purposes... uncomment if done
+    //if(!m_isForecedOff)
     {
         Data currentData = data.getThrottleData();
         Data previousData = m_previousControlerData.getThrottleData();
+
+        TRACE_VAR("Current data upper: ", currentData.upper, DBG);
+        TRACE_VAR("Previous data upper: ", previousData.upper, DBG);
 
         m_previousControlerData = data;
 
@@ -98,7 +104,6 @@ void MotorControl::stopEngines()
     m_throttle = MOTOR_OFF;
     throttle(m_throttle);
 }
-
 
 void MotorControl::throttle(int t)
 {
