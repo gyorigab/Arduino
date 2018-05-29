@@ -19,6 +19,7 @@ DEFINES += GDEBUG
 
 SOURCES += main.cpp \
         ../../message.cpp\
+        ../../messageext.cpp\
         ../../radio.cpp\
         ../../trace.cpp\
         ../../utils.cpp\
@@ -41,6 +42,7 @@ HEADERS += \
     ../../packet.h \
     ../../hashmap.h\
     ../../message.h \
+    ../../messageext.h\
     ../../radio.h\
     ../../trace.h\
     ../../utils.h\

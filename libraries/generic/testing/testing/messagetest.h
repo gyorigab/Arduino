@@ -16,10 +16,10 @@ class MessageTest
         Message m(Packet::ControlRequest);
         Message m1(Packet::ControlRequest);
 
-        uint8_t packet[20] = {0x02,0x43,0x0F,0x00,0x1D,0x64,0x1E,0x4E,0x31,0x1E,
+        uint8_t packet[20] = {0x02,0x43,0x0D,0x00,0x1E,0x4E,0x31,0x1E,
                               0x53,0x32,0x33,0x1E,0x57,0x00,0x1E,0x45,0x34,0x03};
 
-        uint8_t packet1[20] = {0x02,0x43,0x0F,0x00,0x1D,0x64,0x1E,0x4E,0x31,0x1E,
+        uint8_t packet1[20] = {0x02,0x43,0x0D,0x00,0x1E,0x4E,0x31,0x1E,
                               0x53,0x32,0x33,0x34,0x1E,0x57,0x1E,0x45,0x34,0x03};
 
         uint8_t northExp[1] = {0x31};
@@ -51,10 +51,10 @@ class MessageTest
         m.parsePacket(p);
         m1.parsePacket(p1);
 
-        ByteBuffer north = m.get(Message::Direction, Message::North);
-        ByteBuffer south = m.get(Message::Direction, Message::South);
-        ByteBuffer west  = m.get(Message::Direction, Message::West);
-        ByteBuffer east  = m.get(Message::Direction, Message::East);
+        ByteBuffer north = m.get(Message::North);
+        ByteBuffer south = m.get(Message::South);
+        ByteBuffer west  = m.get(Message::West);
+        ByteBuffer east  = m.get(Message::East);
 
         ut.checkSizeEquality(north.size(),1);
         ut.checkSizeEquality(south.size(),2);
@@ -66,10 +66,10 @@ class MessageTest
         ut.checkEquality(west.ptr(),  westBuffExp.ptr(),1);
         ut.checkEquality(east.ptr(),  eastBuffExp.ptr(),1);
 
-        ByteBuffer north1 = m1.get(Message::Direction, Message::North);
-        ByteBuffer south1 = m1.get(Message::Direction, Message::South);
-        ByteBuffer west1 = m1.get(Message::Direction,  Message::West);
-        ByteBuffer east1  = m1.get(Message::Direction, Message::East);
+        ByteBuffer north1 = m1.get(Message::North);
+        ByteBuffer south1 = m1.get(Message::South);
+        ByteBuffer west1  = m1.get(Message::West);
+        ByteBuffer east1  = m1.get(Message::East);
 
         ut.checkSizeEquality(north1.size(),1);
         ut.checkSizeEquality(south1.size(),3);
@@ -83,16 +83,15 @@ class MessageTest
 
         Message m3(Packet::ControlRequest);
 
-        m3.set(Message::Direction);
-        m3.set(Message::Direction, Message::North, northBuffExp);
-        m3.set(Message::Direction, Message::South, southBuffExp);
-        m3.set(Message::Direction, Message::West,  westBuffExp);
-        m3.set(Message::Direction, Message::East,  eastBuffExp);
+        m3.set(Message::North, northBuffExp);
+        m3.set(Message::South, southBuffExp);
+        m3.set(Message::West,  westBuffExp);
+        m3.set(Message::East,  eastBuffExp);
 
         Packet p3 = m.createPacket();
         ByteBuffer packetEncode = encode(p3);
 
-        ut.checkSizeEquality(packetEncode.size(), 20);
+        ut.checkSizeEquality(packetEncode.size(), 18);
         ut.checkEquality(packetEncode.ptr(),packetBuffer.ptr(),20);
     }
 
@@ -116,14 +115,16 @@ class MessageTest
             // Transmiter part
             for(int j=0; j<ARRAY_SIZE; j++)
             {
-                directionArray[j]         = 0;
-                throttleArray[j]          = 0;
+                directionArray[j] = 0;
+                throttleArray[j]  = 0;
             }
 
             for(int j=0; j<ARRAY_SIZE; j++)
             {
-                directionVal = int(double(10000)*rand()/(RAND_MAX+1.0));
-                throttleVal = int(double(10000)*rand()/(RAND_MAX+1.0));
+                //directionVal = int(double(10000)*rand()/(RAND_MAX+1.0));
+                //throttleVal = int(double(10000)*rand()/(RAND_MAX+1.0));
+                directionVal = j;
+                throttleVal  = j+10;
 
                 directionArray[j] = directionVal;
                 throttleArray[j] = throttleVal;
@@ -153,17 +154,15 @@ class MessageTest
 
             Message tMessage(Packet::ControlRequest);
 
-            tMessage.set(Message::Direction);
-            tMessage.set(Message::Direction, Message::North, tNorth);
-            tMessage.set(Message::Direction, Message::South, tSouth);
-            tMessage.set(Message::Direction, Message::East,  tEast);
-            tMessage.set(Message::Direction, Message::West,  tWest);
+            tMessage.set(Message::North, tNorth);
+            tMessage.set(Message::South, tSouth);
+            tMessage.set(Message::East,  tEast);
+            tMessage.set(Message::West,  tWest);
 
-            tMessage.set(Message::Throttle);
-            tMessage.set(Message::Throttle, Message::Up,          tUp);
-            tMessage.set(Message::Throttle, Message::Down,        tDown);
-            tMessage.set(Message::Throttle, Message::RotateLeft,  tLeft);
-            tMessage.set(Message::Throttle, Message::RotateRight, tRight);
+            tMessage.set(Message::Up,          tUp);
+            tMessage.set(Message::Down,        tDown);
+            tMessage.set(Message::RotateLeft,  tLeft);
+            tMessage.set(Message::RotateRight, tRight);
 
             Packet pt = tMessage.createPacket();
             ByteBuffer packetEncode = encode(pt);
@@ -181,15 +180,15 @@ class MessageTest
 
             Message rMessage(pr);
 
-            ByteBuffer rNorth = rMessage.get(Message::Direction, Message::North);
-            ByteBuffer rSouth = rMessage.get(Message::Direction, Message::South);
-            ByteBuffer rEast  = rMessage.get(Message::Direction, Message::East);
-            ByteBuffer rWest  = rMessage.get(Message::Direction, Message::West);
+            ByteBuffer rNorth = rMessage.get(Message::North);
+            ByteBuffer rSouth = rMessage.get(Message::South);
+            ByteBuffer rEast  = rMessage.get(Message::East);
+            ByteBuffer rWest  = rMessage.get(Message::West);
 
-            ByteBuffer rUp    = rMessage.get(Message::Throttle, Message::Up);
-            ByteBuffer rDown  = rMessage.get(Message::Throttle, Message::Down);
-            ByteBuffer rRight = rMessage.get(Message::Throttle, Message::RotateRight);
-            ByteBuffer rLeft  = rMessage.get(Message::Throttle, Message::RotateLeft);
+            ByteBuffer rUp    = rMessage.get(Message::Up);
+            ByteBuffer rDown  = rMessage.get(Message::Down);
+            ByteBuffer rRight = rMessage.get(Message::RotateRight);
+            ByteBuffer rLeft  = rMessage.get(Message::RotateLeft);
 
             directionArrayReceived[0] = rNorth.asInt();
             directionArrayReceived[1] = rSouth.asInt();

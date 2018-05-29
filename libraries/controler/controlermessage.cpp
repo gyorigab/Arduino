@@ -29,12 +29,12 @@ ControlerMessage& ControlerMessage::createDirectionMsg(const Joystick &joystick)
     TRACE_BUF("WEST:   ", west,   DBG);
     TRACE_BUF("BUTTON: ", button, DBG);
 
-    m_message.set(Message::Direction);
-    m_message.set(Message::Direction, Message::North,  north);
-    m_message.set(Message::Direction, Message::South,  south);
-    m_message.set(Message::Direction, Message::West,   west);
-    m_message.set(Message::Direction, Message::East,   east);
-    m_message.set(Message::Direction, Message::Button, button);
+    m_message.set(Message::North, north);
+    m_message.set(Message::South, south);
+    m_message.set(Message::West,  west);
+    m_message.set(Message::East,  east);
+
+    m_message.set(Message::ButtonLeft, button);
 
     return *this;
 }
@@ -59,12 +59,12 @@ ControlerMessage& ControlerMessage::createThrottleMsg(const Joystick &joystick)
     TRACE_BUF("RIGHT:  ", right,  DBG);
     TRACE_BUF("BUTTON: ", button, DBG);
 
-    m_message.set(Message::Throttle);
-    m_message.set(Message::Throttle, Message::Up,          up);
-    m_message.set(Message::Throttle, Message::Down,        down);
-    m_message.set(Message::Throttle, Message::RotateLeft,  left);
-    m_message.set(Message::Throttle, Message::RotateRight, right);
-    m_message.set(Message::Throttle, Message::Button,      button);
+    m_message.set(Message::Up,          up);
+    m_message.set(Message::Down,        down);
+    m_message.set(Message::RotateLeft,  left);
+    m_message.set(Message::RotateRight, right);
+
+    m_message.set(Message::ButtonRight, button);
 
     return *this;
 }

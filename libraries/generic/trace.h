@@ -11,9 +11,17 @@
 
 #define TRACE_FUNCTION() Log logFunction(__FUNCTION__,__FILE__, __LINE__)
 
-#define TRACE(message, verbosity)          Trace::print(F(message),verbosity)
-#define TRACE_VAR(message, var, verbosity) Trace::print(F(message), var, verbosity)
-#define TRACE_BUF(message, var, verbosity) Trace::printBuffer(F(message), var, verbosity)
+// TODO to je hnus :)
+#ifdef GDEBUG
+  #define TRACE(message, verbosity)          Trace::print(message,verbosity)
+  #define TRACE_VAR(message, var, verbosity) Trace::print(message, var, verbosity)
+  #define TRACE_BUF(message, var, verbosity) Trace::printBuffer(message, var, verbosity)
+#else
+  #define TRACE(message, verbosity)          Trace::print(F(message),verbosity)
+  #define TRACE_VAR(message, var, verbosity) Trace::print(F(message), var, verbosity)
+  #define TRACE_BUF(message, var, verbosity) Trace::printBuffer(F(message), var, verbosity)
+#endif
+
 #define TRACING(verbosity)                 VerbositySetter verbSetter(verbosity)
 #define TRACE_MEM()                        Trace::printFreeMemory()
 
@@ -40,9 +48,11 @@ public:
 
     static void printFreeMemory()
     {
+#ifndef GDEBUG  // PC
         Serial.print(F("[INFO]    Free Memory: "));
         Serial.print(freeMemory());
         Serial.println(F(" bytes"));
+#endif
     }
 	
     template<typename T, typename V>
@@ -220,6 +230,7 @@ private:
 
     static int freeMemory()
     {
+#ifndef GDEBUG  // PC
         char top;
         #ifdef __arm__
         return &top - reinterpret_cast<char*>(sbrk(0));
@@ -228,6 +239,7 @@ private:
         #else  // __arm__
         return __brkval ? &top - __brkval : &top - __malloc_heap_start;
         #endif  // __arm__
+#endif
     }
 
     static Verbosity m_verbosity;
@@ -260,13 +272,22 @@ public:
         m_function(function), m_file(file), m_line(line)
     {
         m_depth++;
+#ifdef GDEBUG
+        Trace::print("[ENTER] -> ", Trace::STACK);
+#else
         Trace::print(F("[ENTER] -> "), Trace::STACK);
+#endif
+
         print();
     }
 
     ~Log()
     {
+#ifdef GDEBUG
+        Trace::print("[EXIT]  <- ", Trace::STACK);
+#else
         Trace::print(F("[EXIT]  <- "), Trace::STACK);
+#endif
         print();
         m_depth--;
     }
@@ -275,8 +296,13 @@ public:
     {
         space("#");
         Trace::print(m_function, Trace::STACK);
+#ifdef GDEBUG
+        Trace::print(" file: ", m_file, Trace::STACK);
+        Trace::print(" line: ", m_line, Trace::STACK);
+#else
         Trace::print(F(" file: "), m_file, Trace::STACK);
         Trace::print(F(" line: "), m_line, Trace::STACK);
+#endif
         Trace::newline(Trace::STACK);
     }
 

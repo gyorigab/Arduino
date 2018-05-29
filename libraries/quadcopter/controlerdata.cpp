@@ -13,25 +13,10 @@ void ControlerData::readMessage(const Message &msg)
     TRACE_FUNCTION();
     TRACING(ERR);
 
-    bool hasDirectionData = msg.has(Message::Direction);
-    bool hasThrottleData  = msg.has(Message::Throttle);
-
-    if(hasDirectionData)
+    if(!msg.empty())
     {
         readDirectionMessage(msg);
-    }
-    else
-    {
-        TRACE("No direction data", WRN);
-    }
-
-    if(hasThrottleData)
-    {
         readThrottleMessage(msg);
-    }
-    else
-    {
-        TRACE("No throttle data", WRN);
     }
 }
 
@@ -40,11 +25,11 @@ void ControlerData::readDirectionMessage(const Message &msg)
     TRACE_FUNCTION();
     TRACING(DBG);
 
-    ByteBuffer north  = msg.get(Message::Direction, Message::North);
-    ByteBuffer south  = msg.get(Message::Direction, Message::South);
-    ByteBuffer east   = msg.get(Message::Direction, Message::East);
-    ByteBuffer west   = msg.get(Message::Direction, Message::West);
-    ByteBuffer button = msg.get(Message::Direction, Message::Button);
+    ByteBuffer north  = msg.get(Message::North);
+    ByteBuffer south  = msg.get(Message::South);
+    ByteBuffer east   = msg.get(Message::East);
+    ByteBuffer west   = msg.get(Message::West);
+    ByteBuffer button = msg.get(Message::ButtonLeft);
 
     m_directionData.upper = north.asInt();
     m_directionData.lower = south.asInt();
@@ -64,11 +49,11 @@ void ControlerData::readThrottleMessage(const Message &msg)
     TRACE_FUNCTION();
     TRACING(DBG);
 
-    ByteBuffer up     = msg.get(Message::Throttle,  Message::Up);
-    ByteBuffer down   = msg.get(Message::Throttle,  Message::Down);
-    ByteBuffer left   = msg.get(Message::Throttle,  Message::RotateLeft);
-    ByteBuffer right  = msg.get(Message::Throttle,  Message::RotateRight);
-    ByteBuffer button = msg.get(Message::Throttle, Message::Button);
+    ByteBuffer up     = msg.get(Message::Up);
+    ByteBuffer down   = msg.get(Message::Down);
+    ByteBuffer left   = msg.get(Message::RotateLeft);
+    ByteBuffer right  = msg.get(Message::RotateRight);
+    ByteBuffer button = msg.get(Message::ButtonRight);
 
     m_throttleData.upper = up.asInt();
     m_throttleData.lower = down.asInt();
