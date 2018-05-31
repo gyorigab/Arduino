@@ -129,11 +129,11 @@ class ByteBufferTest
         ut.checkSizeEquality(asciiBuffer.size(), 3);
         ut.checkEquality(asciiBuffer.ptr(),expAsciiBuff, 3);
 
-        ByteBuffer asciiBuffer1(expAsciiBuff, 2);
+        ByteBuffer asciiBuffer1(expAsciiBuff, 3);
 
-        char * ascii1 = new char[3];
+        char * ascii1 = new char[4];
 
-        asciiBuffer1.asAscii(ascii1, 3);
+        asciiBuffer1.asAscii(ascii1, 4);
 
         cout << "Ascii: " << ascii1 << endl;
 

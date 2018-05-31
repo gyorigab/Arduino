@@ -188,13 +188,13 @@ public:
         if(start >= 0 && start <= m_length && end >= start && end <= m_length)
         {
             ByteBuffer bb(end - start);
+            bb.m_length = bb.m_capacity;
 
             if (bb.m_capacity > 0)
             {
                 for(size_t i = start, j = 0; j < end - start ; i++, j++)
                 {
                     bb.m_data[j] = m_data[i];
-                    bb.m_length++;
                 }
             }
             return bb;
@@ -306,7 +306,9 @@ public:
         {
             return ByteBuffer(0);
         }
+
         ByteBuffer bb(len / 2);
+        bb.m_length = bb.m_capacity;
 
         for (size_t i = 0; i < bb.m_length; ++i)
         {
@@ -325,6 +327,7 @@ public:
     static ByteBuffer fromAscii(const char* ascii, size_t len)
     {
         ByteBuffer bb(len);
+        bb.m_length = len;
         for (size_t i = 0; i < len; ++i)
         {
             char c = ascii[i];
@@ -333,7 +336,6 @@ public:
                 return ByteBuffer(0);
             }
             bb.m_data[i] = c;
-            bb.m_length++;
         }
         return bb;
     }
