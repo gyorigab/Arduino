@@ -131,9 +131,9 @@ class ByteBufferTest
 
         ByteBuffer asciiBuffer1(expAsciiBuff, 2);
 
-        char * ascii1 = new char[2];
+        char * ascii1 = new char[3];
 
-        asciiBuffer1.asAscii(ascii1, 2);
+        asciiBuffer1.asAscii(ascii1, 3);
 
         cout << "Ascii: " << ascii1 << endl;
 

@@ -325,7 +325,7 @@ public:
     static ByteBuffer fromAscii(const char* ascii, size_t len)
     {
         ByteBuffer bb(len);
-        for (size_t i = 0; i < bb.m_length; ++i)
+        for (size_t i = 0; i < len; ++i)
         {
             char c = ascii[i];
             if (c < 0 || c > 127)
@@ -333,6 +333,7 @@ public:
                 return ByteBuffer(0);
             }
             bb.m_data[i] = c;
+            bb.m_length++;
         }
         return bb;
     }
