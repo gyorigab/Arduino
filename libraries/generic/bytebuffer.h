@@ -188,13 +188,13 @@ public:
         if(start >= 0 && start <= m_length && end >= start && end <= m_length)
         {
             ByteBuffer bb(end - start);
-            bb.m_length = m_length;
 
-            if (bb.m_length > 0)
+            if (bb.m_capacity > 0)
             {
                 for(size_t i = start, j = 0; j < end - start ; i++, j++)
                 {
                     bb.m_data[j] = m_data[i];
+                    bb.m_length++;
                 }
             }
             return bb;
