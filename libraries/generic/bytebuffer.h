@@ -24,9 +24,10 @@ class ByteBuffer final
 public:
 
     /**
-     * \brief Creates an empty byte buffer.
+     * \brief Allocates the byte buffer of given length, but keeps the data uninitialized.
+     * \param length the number of bytes to allocate
      */
-    ByteBuffer() : ByteBuffer(0)
+    ByteBuffer(size_t capacity = 16) : m_length(0), m_capacity(capacity), m_data(m_capacity ? new uint8_t[m_capacity] : NULL)
     {
     }
 
@@ -45,9 +46,10 @@ public:
     */
     ByteBuffer(const uint8_t *src, size_t length) : ByteBuffer(length)
     {
+        m_length = length;
+
         if (length > 0 && src != NULL)
         {
-            //memcpy( m_data, src, length);
             for(int i = 0; i < m_length; i++)
             {
                 m_data[i] = src[i];
@@ -65,7 +67,9 @@ public:
             delete[] m_data;
 
             m_length = src.m_length;
-            m_data = m_length ? new uint8_t[m_length] : NULL;
+            m_capacity = src.m_capacity;
+
+            m_data = m_capacity ? new uint8_t[m_capacity] : NULL;
 
             for(int i = 0; i < m_length; i++)
             {
@@ -83,7 +87,9 @@ public:
     {
         // Bohuzal neni k dispozici swap
         m_length = src.m_length;
-        m_data = m_length ? new uint8_t[m_length] : NULL;
+        m_capacity = src.m_capacity;
+
+        m_data = m_capacity ? new uint8_t[m_capacity] : NULL;
 
         for(int i = 0; i < m_length; i++)
         {
@@ -182,6 +188,8 @@ public:
         if(start >= 0 && start <= m_length && end >= start && end <= m_length)
         {
             ByteBuffer bb(end - start);
+            bb.m_length = m_length;
+
             if (bb.m_length > 0)
             {
                 for(size_t i = start, j = 0; j < end - start ; i++, j++)
@@ -193,16 +201,39 @@ public:
         }
         else
         {
-            return ByteBuffer();
+            return ByteBuffer(0);
         }
     }
 
     /**
-    * \brief Creates a new byte buffer by appending another byte buffer to the content of this byte buffer.
-    * \param buf the byte buffer to append
+    * \brief Append a new value to the content of this byte buffer.
+    * \param  bytes to append
+    * \param  length of the byte array
     * \return the new byte buffer
     */
-    ByteBuffer append(const uint8_t *src, size_t length) const
+    ByteBuffer& append(const uint8_t *src, size_t length)
+    {
+        //check if there is enough of space
+        if(m_length + length > m_capacity)
+        {
+            realocate(length);
+        }
+
+        for(int i = 0; i < length; i++)
+        {
+            m_data[m_length++] = src[i];
+        }
+
+        return *this;
+    }
+
+    /**
+    * \brief  Creates a new byte buffer by appending another byte buffer
+    * \param  bytes to append
+    * \param  length of the byte array
+    * \return the new byte buffer
+    */
+    ByteBuffer expensiveAppend(const uint8_t *src, size_t length) const
     {
         ByteBuffer bb(m_length + length);
         int j = 0;
@@ -225,7 +256,7 @@ public:
      * \param buf the byte buffer to append
      * \return the new byte buffer
      */
-    ByteBuffer append(const ByteBuffer &buf) const
+    ByteBuffer append(const ByteBuffer &buf)
     {
         return append(buf.m_data, buf.m_length);
     }
@@ -235,7 +266,7 @@ public:
      * \param value the byte to append
      * \return the new byte buffer
      */
-    ByteBuffer appendUint8(uint8_t value) const
+    ByteBuffer appendUint8(uint8_t value)
     {
         return append(&value, 1);
     }
@@ -245,7 +276,7 @@ public:
      * \param value the value to append
      * \return the new byte buffer
      */
-    ByteBuffer appendUint16LE(uint16_t value) const
+    ByteBuffer appendUint16LE(uint16_t value)
     {
         uint8_t buf[2] = { static_cast<uint8_t>(value & 0xFF), static_cast<uint8_t>(value >> 8) };
         return append(buf, 2);
@@ -257,7 +288,7 @@ public:
      * \param value the value to append
      * \return the new byte buffer
      */
-    ByteBuffer appendUint16BE(uint16_t value) const
+    ByteBuffer appendUint16BE(uint16_t value)
     {
         uint8_t buf[2] = { static_cast<uint8_t>(value >> 8), static_cast<uint8_t>(value & 0xFF) };
         return append(buf, 2);
@@ -273,7 +304,7 @@ public:
     {
         if (len % 2 == 1)
         {
-            return ByteBuffer();
+            return ByteBuffer(0);
         }
         ByteBuffer bb(len / 2);
 
@@ -299,7 +330,7 @@ public:
             char c = ascii[i];
             if (c < 0 || c > 127)
             {
-                return ByteBuffer();
+                return ByteBuffer(0);
             }
             bb.m_data[i] = c;
         }
@@ -345,7 +376,8 @@ public:
             ByteBuffer bb = fromAscii(buffer, nn);
             return bb;
         }
-        return ByteBuffer();
+
+        return ByteBuffer(0);
     }
 
     /**
@@ -364,12 +396,20 @@ public:
 
 private:
 
-    /**
-     * \brief Allocates the byte buffer of given length, but keeps the data uninitialized.
-     * \param length the number of bytes to allocate
-     */
-    explicit ByteBuffer(size_t length) : m_length(length), m_data(m_length ? new uint8_t[m_length] : NULL)
+    void realocate(size_t length = 0)
     {
+        ByteBuffer tmp = *this;
+        clear();
+
+        m_length = tmp.m_length;
+        m_capacity = tmp.m_capacity + length + 8;
+
+        m_data = m_capacity ? new uint8_t[m_capacity] : NULL;
+
+        for(int i = 0; i < m_length; i++)
+        {
+            m_data[i] = tmp.m_data[i];
+        }
     }
 
     /**
@@ -382,10 +422,12 @@ private:
             delete[] m_data;
             m_data = NULL;
             m_length = 0;
+            m_capacity = 0;
         }
     }
 
     size_t m_length;
+    size_t m_capacity;
     uint8_t *m_data;
 };
 
