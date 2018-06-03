@@ -24,7 +24,7 @@ public:
 private:
 
     static const uint16_t MOTOR_OFF   = 1000;
-    static const uint16_t MOTOR_START = 1300;
+    static const uint16_t MOTOR_START = 1400;
 
     Motor m_motorNorth;
     Motor m_motorSouth;

@@ -17,7 +17,7 @@ void Radio::init()
     m_radio.openWritingPipe(m_transmiterAddr.ptr());
     m_radio.openReadingPipe(1, m_receiverAddr.ptr());
 
-    m_radio.setPALevel(RF24_PA_MIN);
+    m_radio.setPALevel(RF24_PA_HIGH);
 }
 
 ByteBuffer Radio::read()
