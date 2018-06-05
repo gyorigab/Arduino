@@ -369,9 +369,9 @@ public:
      * \param integer number
      * \return the byte buffer
      */
-    static ByteBuffer fromInt(int number)
+    static ByteBuffer fromInt(int number, uint8_t digits = 20)
     {
-        char buffer [20];
+        char buffer [digits];
         int nn = sprintf(buffer, "%d", number);
 
         if(nn > 0)
@@ -387,14 +387,24 @@ public:
      * \brief Constructs a integer from byte buffer
      * \return the integer number
      */
-    int asInt() const
+    int asInt(uint8_t digits = 20) const
     {
         int i = 0;
-        char buffer[20];
-        this->asAscii(buffer,20);
+        char buffer[digits];
+        this->asAscii(buffer,digits);
         //TODO nahradit za strtol
         sscanf(buffer, "%d", &i);
         return i;
+    }
+
+    static ByteBuffer fromInt8(int number)
+    {
+        return fromInt(number, 4);
+    }
+
+    int asInt8() const
+    {
+        return asInt(4);
     }
 
 private:
