@@ -10,7 +10,11 @@ const byte address[][6] = {"00001","00002"};
 const ByteBuffer Quadcopter::RECV_ADDR = ByteBuffer(address[0], sizeof(address[0]));
 const ByteBuffer Quadcopter::TRAN_ADDR = ByteBuffer(address[1], sizeof(address[1]));
 
-Quadcopter::Quadcopter() : m_radio(RECV_ADDR, TRAN_ADDR), m_motors(PWM_NORTH, PWM_SOUTH, PWM_WEST, PWM_EAST)
+const uint8_t DRONE_RADIO_CE  = 48;
+const uint8_t DRONE_RADIO_CSN = 49;
+
+Quadcopter::Quadcopter() : m_radio(RECV_ADDR, TRAN_ADDR, DRONE_RADIO_CE, DRONE_RADIO_CSN),
+                           m_motors(PWM_NORTH, PWM_SOUTH, PWM_WEST, PWM_EAST)
 {
 
 }
@@ -35,6 +39,9 @@ ByteBuffer Quadcopter::go()
     TRACING(DBG);
 
     ByteBuffer bb = m_radio.read();
+
+    TRACE_BUF("Received packet:", bb, DBG);
+
     Packet p = decode(bb);
 
     Message msg(p);
