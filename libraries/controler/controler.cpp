@@ -34,6 +34,8 @@ void Controler::sendMessage(const Message &msg)
     // Encode packet
     ByteBuffer packetEncode = encode(p);
 
+    TRACE_BUF("Encoded packet: ", packetEncode, DBG);
+
     // Send packet through radio
     m_radio.write(packetEncode);
 }

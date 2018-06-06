@@ -42,7 +42,7 @@ ControlerMessage& ControlerMessage::createDirectionMsg(const Joystick &joystick)
 ControlerMessage& ControlerMessage::createThrottleMsg(const Joystick &joystick)
 {
     TRACE_FUNCTION();
-    TRACING(INF);
+    TRACING(DBG);
 
     Joystick::Data data = joystick.getJoystickPosition();
 
