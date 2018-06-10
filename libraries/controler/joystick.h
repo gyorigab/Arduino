@@ -22,6 +22,15 @@ public:
         bool key;
 
         Data() : upper(0), lower(0), left(0), right(0), key(false) {}
+
+        bool operator==(const Data& data)
+        {
+            return upper == data.upper &&
+                   lower == data.lower &&
+                   left  == data.left  &&
+                   right == data.right &&
+                   key   == data.key;
+        }
     };
 
     /**

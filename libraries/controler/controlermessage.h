@@ -35,6 +35,7 @@ public:
 
 private:
     Message m_message;
+    Joystick::Data m_lastData;
 };
 
 #endif // CONTROLERMESSAGE_H
