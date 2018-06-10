@@ -12,11 +12,12 @@ ControlerMessage::~ControlerMessage()
 ControlerMessage& ControlerMessage::createDirectionMsg(const Joystick &joystick)
 {
     TRACE_FUNCTION();
-    TRACING(DBG);
+    TRACING(INF);
 
     Joystick::Data data = joystick.getJoystickPosition();
+    m_message.clear();
 
-    if(data == m_lastData)
+    if(data != m_lastDirectionData)
     {
         ByteBuffer north = ByteBuffer::fromInt(data.upper);
         ByteBuffer south = ByteBuffer::fromInt(data.lower);
@@ -39,7 +40,7 @@ ControlerMessage& ControlerMessage::createDirectionMsg(const Joystick &joystick)
         m_message.set(Message::ButtonLeft, button);
     }
 
-    m_lastData = data;
+    m_lastDirectionData = data;
 
     return *this;
 }
@@ -47,11 +48,12 @@ ControlerMessage& ControlerMessage::createDirectionMsg(const Joystick &joystick)
 ControlerMessage& ControlerMessage::createThrottleMsg(const Joystick &joystick)
 {
     TRACE_FUNCTION();
-    TRACING(DBG);
+    TRACING(INF);
 
     Joystick::Data data = joystick.getJoystickPosition();
+    m_message.clear();
 
-    if(data == m_lastData)
+    if(data != m_lastThrottleData)
     {
         ByteBuffer up    = ByteBuffer::fromInt(data.upper);
         ByteBuffer down  = ByteBuffer::fromInt(data.lower);
@@ -74,7 +76,7 @@ ControlerMessage& ControlerMessage::createThrottleMsg(const Joystick &joystick)
         m_message.set(Message::ButtonRight, button);
     }
 
-    m_lastData = data;
+    m_lastThrottleData = data;
 
     return *this;
 }

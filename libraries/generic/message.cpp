@@ -56,6 +56,12 @@ bool Message::empty() const
     return m_message.empty();
 }
 
+void Message::clear()
+{
+    m_message.clear();
+    m_messageType = Packet::InvalidType;
+}
+
 void Message::parsePacket(const Packet &packet)
 {
     TRACING(DBG);

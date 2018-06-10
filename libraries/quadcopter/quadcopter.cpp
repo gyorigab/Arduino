@@ -36,19 +36,9 @@ void Quadcopter::init()
 ByteBuffer Quadcopter::go()
 {
     TRACE_FUNCTION();
-    TRACING(DBG);
+    TRACING(INF);
 
     ByteBuffer bb = m_radio.read();
-
-    TRACE_BUF("Received packet:", bb, DBG);
-
-    Packet p = decode(bb);
-
-    Message msg(p);
-
-    ControlerData cdata(msg);
-
-    TRACE_BUF("Data Payload Received ",p.getPayload(), DBG );
 
     Angle currentDronAngle = m_gyroscope.getAngle();
 
@@ -60,13 +50,27 @@ ByteBuffer Quadcopter::go()
 
     Angle pid = m_pid.getPidCorrection(currentDronAngle, desriedDronAngle);
 
-    TRACE_VAR("PID correction X: ", pid.getX(), INF);
-    TRACE_VAR("PID correction Y: ", pid.getY(), INF);
+    TRACE_VAR("PID correction X: ", pid.getX(), DBG);
+    TRACE_VAR("PID correction Y: ", pid.getY(), DBG);
 
-    m_motors.throttle(cdata);
-    m_motors.control(pid);
+    if(!bb.empty())
+    {
+        TRACE_BUF("Received packet:", bb, INF);
 
-    TRACE_MEM();
+        Packet p = decode(bb);
+
+        Message msg(p);
+
+        ControlerData cdata(msg);
+
+        TRACE_BUF("Data Payload Received ",p.getPayload(), DBG );
+
+        m_motors.throttle(cdata);
+    }
+
+    //m_motors.control(pid);
+
+    //TRACE_MEM();
 
     return ByteBuffer();
 }

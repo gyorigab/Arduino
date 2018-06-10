@@ -24,32 +24,40 @@ void Controler::init()
 void Controler::sendMessage(const Message &msg)
 {
     TRACE_FUNCTION();
-    TRACING(INF);
+    TRACING(DBG);
 
-    // Create packet from message
-    Packet p = msg.createPacket();
+    if(!msg.empty())
+    {
+        TRACE("Controler send message", DBG);
 
-    TRACE_BUF("Controler payload: ", p.getPayload(), DBG);
+        // Create packet from message
+        Packet p = msg.createPacket();
 
-    // Encode packet
-    ByteBuffer packetEncode = encode(p);
+        TRACE_BUF("Controler payload: ", p.getPayload(), DBG);
 
-    TRACE_BUF("Encoded packet: ", packetEncode, DBG);
+        // Encode packet
+        ByteBuffer packetEncode = encode(p);
 
-    // Send packet through radio
-    m_radio.write(packetEncode);
+        TRACE_BUF("Encoded packet: ", packetEncode, DBG);
+
+        // Send packet through radio
+        m_radio.write(packetEncode);
+    }
 }
 
 void Controler::go()
 {
-    ControlerMessage cmsg;
-
     // Create control message by using data of given joysticks
-    cmsg.createDirectionMsg(m_directionJoystick)
-        .createThrottleMsg(m_throttleJoystick);
+    m_cmsg.createDirectionMsg(m_directionJoystick);
 
     // Get pointer to controler message which stores control data
-    Message *msg = cmsg.getControlerMessage();
+    Message *msg = m_cmsg.getControlerMessage();
+
+    // Send message to dron
+    sendMessage(*msg);
+
+    m_cmsg.createThrottleMsg(m_throttleJoystick);
+    msg = m_cmsg.getControlerMessage();
 
     // Send message to dron
     sendMessage(*msg);

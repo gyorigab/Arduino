@@ -31,6 +31,11 @@ public:
                    right == data.right &&
                    key   == data.key;
         }
+
+        bool operator!=(const Data& data)
+        {
+            return !(operator ==(data));
+        }
     };
 
     /**

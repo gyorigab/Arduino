@@ -40,6 +40,8 @@ private:
 
     static const ByteBuffer RECV_ADDR;  // Receiver radio address
     static const ByteBuffer TRAN_ADDR;  // Transmitter radio address
+
+    ControlerMessage m_cmsg;
 };
 
 #endif

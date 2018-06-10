@@ -407,6 +407,20 @@ public:
         return asInt(4);
     }
 
+    /**
+     * \brief Deallocates the memory.
+     */
+    void clear()
+    {
+        if(m_data != NULL)
+        {
+            delete[] m_data;
+            m_data = NULL;
+            m_length = 0;
+            m_capacity = 0;
+        }
+    }
+
 private:
 
     void realocate(size_t length = 0)
@@ -425,19 +439,6 @@ private:
         }
     }
 
-    /**
-     * \brief Deallocates the memory.
-     */
-    void clear()
-    {
-        if(m_data != NULL)
-        {
-            delete[] m_data;
-            m_data = NULL;
-            m_length = 0;
-            m_capacity = 0;
-        }
-    }
 
     size_t m_length;
     size_t m_capacity;

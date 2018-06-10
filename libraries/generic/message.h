@@ -70,6 +70,8 @@ public:
      */
     bool empty() const;
 
+    void clear();
+
     /**
      * \brief Create packet payload string from given GIDs and RIDs
      * \return instance of packet with type and payload
