@@ -5,6 +5,8 @@
 #include <stdint.h>
 #include <cstddef>
 #include <stdio.h>
+#include <cstring>
+#include <iostream>
 #endif
 
 /**
@@ -27,8 +29,21 @@ public:
      * \brief Allocates the byte buffer of given length, but keeps the data uninitialized.
      * \param length the number of bytes to allocate
      */
-    ByteBuffer(size_t capacity = 16) : m_length(0), m_capacity(capacity), m_data(m_capacity ? new uint8_t[m_capacity] : NULL)
+    ByteBuffer(size_t capacity = 32) : m_length(0)
     {
+        if(capacity > m_internalCapacity)
+        {   
+            m_capacity = capacity;
+            m_data = new uint8_t[m_capacity];
+            m_isExternalBufferUsed = true;
+        }
+        else
+        {
+            m_capacity = 0;
+            m_data = NULL;
+            m_isExternalBufferUsed = false;
+            memset(m_internalData, 0, m_internalCapacity);
+        }
     }
 
     /**
@@ -48,11 +63,24 @@ public:
     {
         m_length = length;
 
-        if (length > 0 && src != NULL)
+        if (m_isExternalBufferUsed)
         {
-            for(int i = 0; i < m_length; i++)
+            if (length > 0 && src != NULL)
             {
-                m_data[i] = src[i];
+                 for(int i = 0; i < m_length; i++)
+                 {
+                     m_data[i] = src[i];
+                 }
+            }
+        }
+        else
+        {
+            if (length > 0 && src != NULL)
+            {
+                 for(int i = 0; i < m_length; i++)
+                 {
+                     m_internalData[i] = src[i];
+                 }
             }
         }
     }
@@ -64,16 +92,33 @@ public:
     {
         if (&src != this)
         {
-            delete[] m_data;
-
             m_length = src.m_length;
             m_capacity = src.m_capacity;
-
-            m_data = m_capacity ? new uint8_t[m_capacity] : NULL;
-
-            for(int i = 0; i < m_length; i++)
+            m_isExternalBufferUsed = src.m_isExternalBufferUsed;
+            
+            if (m_isExternalBufferUsed)
             {
-                m_data[i] = src.m_data[i];
+                delete[] m_data;
+                m_data = new uint8_t[m_capacity];
+
+                for(int i = 0; i < m_length; i++)
+                { 
+                    m_data[i] = src.m_data[i];
+                }
+            }
+            else
+            {
+                m_data = NULL;
+
+                for(int i = 0; i < m_length; i++)
+                { 
+                    m_internalData[i] = src.m_internalData[i];
+                }
+                
+                for(int i = m_length; i < m_internalCapacity; i++)
+                {
+                    m_internalData[i] = 0;
+                }
             }
         }
 
@@ -88,12 +133,26 @@ public:
         // Bohuzal neni k dispozici swap
         m_length = src.m_length;
         m_capacity = src.m_capacity;
-
-        m_data = m_capacity ? new uint8_t[m_capacity] : NULL;
-
-        for(int i = 0; i < m_length; i++)
+        m_isExternalBufferUsed = src.m_isExternalBufferUsed;
+        
+        if (m_isExternalBufferUsed)
         {
-            m_data[i] = src.m_data[i];
+            m_data = new uint8_t[m_capacity];
+
+            for(int i = 0; i < m_length; i++)
+            {
+               m_data[i] = src.m_data[i];
+            }
+        }
+        else
+        {
+            m_data = NULL;
+            
+            for(int i = 0; i < m_length; i++)
+            {
+               m_internalData[i] = src.m_internalData[i];
+            }
+        
         }
     }
 
@@ -103,18 +162,32 @@ public:
      */
     bool operator==(const ByteBuffer& buff)
     {
-        if(m_length != buff.m_length)
+        if(m_length != buff.m_length || m_isExternalBufferUsed != buff.m_isExternalBufferUsed)
         {
             return false;
         }
+        
+        if(m_isExternalBufferUsed)
+        {
+            return areEqual(m_data, buff.m_data);
+        }
+        else
+        {
+            return areEqual(&m_internalData[0], &buff.m_internalData[0]);
+        }
+    }
 
+    // TODO will be private
+    bool areEqual(const uint8_t *data, const uint8_t *inputData)
+    {
         for(int i = 0; i < m_length; i++)
         {
-            if(m_data[i] != buff.m_data[i])
-            {
-                return false;
-            }
+           if(data[i] != inputData[i])
+           {
+               return false;
+           }
         }
+
         return true;
     }
 
@@ -129,7 +202,14 @@ public:
      */
     const uint8_t *ptr() const
     {
-        return m_data;
+        if(m_isExternalBufferUsed)
+        {
+            return m_data;
+        }
+        else
+        {
+            return &m_internalData[0];
+        }
     }
 
     /**
@@ -158,9 +238,22 @@ public:
     */
     uint8_t get(size_t index) const
     {
-        if(index >= 0 && index < m_length)
+         if (m_isExternalBufferUsed)
+         {
+             return get(index, m_data);
+         }
+         else
+         {
+             return get(index, &m_internalData[0]);
+         }
+    }
+
+    // TODO will be private
+    uint8_t get(size_t index, const uint8_t *data) const
+    {
+        if (index >= 0 && index < m_length)
         {
-            return m_data[index];
+            return data[index];
         }
         return 0x00;
     }
@@ -189,12 +282,29 @@ public:
         {
             ByteBuffer bb(end - start);
             bb.m_length = bb.m_capacity;
-
+            
             if (bb.m_capacity > 0)
             {
-                for(size_t i = start, j = 0; j < end - start ; i++, j++)
+                if(bb.m_isExternalBufferUsed && m_isExternalBufferUsed)
                 {
-                    bb.m_data[j] = m_data[i];
+                    for(size_t i = start, j = 0; j < end - start ; i++, j++)
+                    {
+                        bb.m_data[j] = m_data[i];
+                    }
+                }
+                else if(!bb.m_isExternalBufferUsed && !m_isExternalBufferUsed)
+                {
+                    for(size_t i = start, j = 0; j < end - start ; i++, j++)
+                    {
+                        bb.m_internalData[j] = m_internalData[i];
+                    }
+                }
+                else
+                {
+                    for(size_t i = start, j = 0; j < end - start ; i++, j++)
+                    {
+                        bb.m_internalData[j] = m_data[i];
+                    }
                 }
             }
             return bb;
@@ -213,15 +323,43 @@ public:
     */
     ByteBuffer& append(const uint8_t *src, size_t length)
     {
-        //check if there is enough of space
-        if(m_length + length > m_capacity)
+        if (m_isExternalBufferUsed)
         {
-            realocate(length);
+            //check if there is enough of space
+            if(m_length + length > m_capacity)
+            {
+                realocate(length);
+            }
+            
+            // External buffer is used. Append data to external buffer
+            for(int i = 0; i < length; i++)
+            {
+                m_data[m_length++] = src[i];
+            }
         }
-
-        for(int i = 0; i < length; i++)
+        else
         {
-            m_data[m_length++] = src[i];
+            if(m_length + length > m_internalCapacity)
+            {
+                realocate(length);
+
+                // Internal buffer was used but append operation caused realocation
+                // Realocation moved internal buffer to external buffer 
+                // Append data to external buffer
+                for(int i = 0; i < length; i++)
+                {
+                    m_data[m_length++] = src[i];
+                }
+            }
+            else
+            { 
+                 // Internal buffer was used no realocation was needed
+                 // Append data to internla buffer
+                 for(int i = 0; i < length; i++)
+                 {
+                      m_internalData[m_length++] = src[i];
+                 }
+            }
         }
 
         return *this;
@@ -233,6 +371,7 @@ public:
     * \param  length of the byte array
     * \return the new byte buffer
     */
+    // TODO NOT IMPLEMENTED FOR INTERNAL/EXTERNAL BUFFER
     ByteBuffer expensiveAppend(const uint8_t *src, size_t length) const
     {
         ByteBuffer bb(m_length + length);
@@ -310,9 +449,19 @@ public:
         ByteBuffer bb(len / 2);
         bb.m_length = bb.m_capacity;
 
-        for (size_t i = 0; i < bb.m_length; ++i)
+        if(bb.m_isExternalBufferUsed)
         {
-            bb.m_data[i] = (hexDigitValue(hex[2 * i]) << 4) | hexDigitValue(hex[2 * i + 1]);
+            for (size_t i = 0; i < bb.m_length; ++i)
+            {
+                bb.m_data[i] = (hexDigitValue(hex[2 * i]) << 4) | hexDigitValue(hex[2 * i + 1]);
+            }
+        }
+        else
+        {
+            for (size_t i = 0; i < bb.m_length; ++i)
+            {
+                bb.m_internalData[i] = (hexDigitValue(hex[2 * i]) << 4) | hexDigitValue(hex[2 * i + 1]);
+            }
         }
 
         return bb;
@@ -328,6 +477,22 @@ public:
     {
         ByteBuffer bb(len);
         bb.m_length = len;
+        
+        if(bb.m_isExternalBufferUsed)
+        {
+             fromAscii(ascii, len, bb.m_data);
+        }
+        else
+        {
+            fromAscii(ascii, len, &bb.m_internalData[0]);
+        }
+
+        return bb;
+    }
+
+    // TODO will be private
+    static ByteBuffer fromAscii(const char* ascii, size_t len, uint8_t * data)
+    {
         for (size_t i = 0; i < len; ++i)
         {
             char c = ascii[i];
@@ -335,9 +500,8 @@ public:
             {
                 return ByteBuffer(0);
             }
-            bb.m_data[i] = c;
+            data[i] = c;
         }
-        return bb;
     }
 
     /**
@@ -352,6 +516,19 @@ public:
             return;
         }
 
+        if(m_isExternalBufferUsed)
+        {
+             asAscii(string, len, m_data);
+        }
+        else
+        {
+             asAscii(string, len, &m_internalData[0]);
+        }
+    }
+
+    //TODO will be private
+    void asAscii(char *string, size_t len, const uint8_t *data) const
+    {
         for (size_t i = 0; i < m_length; i++)
         {
             if (m_data[i] > 127)
@@ -360,6 +537,7 @@ public:
             }
             string[i] = static_cast<char>(m_data[i]);
         }
+
         // zero terminated string
         string[m_length] = 0;
     }
@@ -412,6 +590,15 @@ public:
      */
     void clear()
     {
+        if(!m_isExternalBufferUsed)
+        {
+            for(size_t i = 0; i < m_internalCapacity; i++)
+            {
+                 m_internalData[i] = 0;
+            }
+            m_length = 0;
+        }
+  
         if(m_data != NULL)
         {
             delete[] m_data;
@@ -429,13 +616,32 @@ private:
         clear();
 
         m_length = tmp.m_length;
-        m_capacity = tmp.m_capacity + length + 8;
+
+        if(m_isExternalBufferUsed)
+        {
+            m_capacity = tmp.m_capacity + length + 8;
+        }
+        else
+        {
+            m_capacity = tmp.m_internalCapacity + length + 8;
+        }
 
         m_data = m_capacity ? new uint8_t[m_capacity] : NULL;
 
-        for(int i = 0; i < m_length; i++)
+        if(m_isExternalBufferUsed)
         {
-            m_data[i] = tmp.m_data[i];
+            for(int i = 0; i < m_length; i++)
+            {
+                m_data[i] = tmp.m_data[i];
+            }
+        }
+        else
+        {
+            for(int i = 0; i < m_length; i++)
+            {
+                m_data[i] = tmp.m_internalData[i];
+                m_internalData[i] = 0;
+            }
         }
     }
 
@@ -443,6 +649,10 @@ private:
     size_t m_length;
     size_t m_capacity;
     uint8_t *m_data;
+
+    static const size_t m_internalCapacity = 32;
+    uint8_t m_internalData[m_internalCapacity];
+    bool m_isExternalBufferUsed;
 };
 
 static uint8_t hexDigitValue(char c)
