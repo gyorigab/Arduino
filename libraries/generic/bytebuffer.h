@@ -33,13 +33,13 @@ public:
     {
         if(capacity > m_internalCapacity)
         {   
-            m_capacity = capacity;
-            m_data = new uint8_t[m_capacity];
+            m_externalCapacity = capacity;
+            m_data = new uint8_t[m_externalCapacity];
             m_isExternalBufferUsed = true;
         }
         else
         {
-            m_capacity = 0;
+            m_externalCapacity = 0;
             m_data = NULL;
             m_isExternalBufferUsed = false;
             memset(m_internalData, 0, m_internalCapacity);
@@ -93,13 +93,13 @@ public:
         if (&src != this)
         {
             m_length = src.m_length;
-            m_capacity = src.m_capacity;
+            m_externalCapacity = src.m_externalCapacity;
             m_isExternalBufferUsed = src.m_isExternalBufferUsed;
             
             if (m_isExternalBufferUsed)
             {
                 delete[] m_data;
-                m_data = new uint8_t[m_capacity];
+                m_data = new uint8_t[m_externalCapacity];
 
                 for(int i = 0; i < m_length; i++)
                 { 
@@ -132,12 +132,12 @@ public:
     {
         // Bohuzal neni k dispozici swap
         m_length = src.m_length;
-        m_capacity = src.m_capacity;
+        m_externalCapacity = src.m_externalCapacity;
         m_isExternalBufferUsed = src.m_isExternalBufferUsed;
         
         if (m_isExternalBufferUsed)
         {
-            m_data = new uint8_t[m_capacity];
+            m_data = new uint8_t[m_externalCapacity];
 
             for(int i = 0; i < m_length; i++)
             {
@@ -281,9 +281,17 @@ public:
         if(start >= 0 && start <= m_length && end >= start && end <= m_length)
         {
             ByteBuffer bb(end - start);
-            bb.m_length = bb.m_capacity;
+
+            if(bb.m_isExternalBufferUsed)
+            {
+                bb.m_length = bb.m_externalCapacity;
+            }
+            else
+            {
+                bb.m_length = end - start;
+            }
             
-            if (bb.m_capacity > 0)
+            if (bb.m_length > 0)
             {
                 if(bb.m_isExternalBufferUsed && m_isExternalBufferUsed)
                 {
@@ -326,7 +334,7 @@ public:
         if (m_isExternalBufferUsed)
         {
             //check if there is enough of space
-            if(m_length + length > m_capacity)
+            if(m_length + length > m_externalCapacity)
             {
                 realocate(length);
             }
@@ -397,7 +405,14 @@ public:
      */
     ByteBuffer append(const ByteBuffer &buf)
     {
-        return append(buf.m_data, buf.m_length);
+        if(m_isExternalBufferUsed)
+        {
+            return append(buf.m_data, buf.m_length);
+        }
+        else
+        {
+            return append(&buf.m_internalData[0], buf.m_length);
+        }
     }
 
     /**
@@ -447,7 +462,15 @@ public:
         }
 
         ByteBuffer bb(len / 2);
-        bb.m_length = bb.m_capacity;
+
+        if(bb.m_isExternalBufferUsed)
+        {
+            bb.m_length = bb.m_externalCapacity;
+        }
+        else
+        {
+            bb.m_length = len / 2;
+        }
 
         if(bb.m_isExternalBufferUsed)
         {
@@ -478,30 +501,36 @@ public:
         ByteBuffer bb(len);
         bb.m_length = len;
         
+        bool res = false;
+
         if(bb.m_isExternalBufferUsed)
         {
-             fromAscii(ascii, len, bb.m_data);
+             res = fromAscii(ascii, len, bb.m_data);
         }
         else
         {
-            fromAscii(ascii, len, &bb.m_internalData[0]);
+            res = fromAscii(ascii, len, &bb.m_internalData[0]);
         }
 
-        return bb;
+        if(res)
+            return bb;
+        else
+            return ByteBuffer(0);
     }
 
     // TODO will be private
-    static ByteBuffer fromAscii(const char* ascii, size_t len, uint8_t * data)
+    static bool fromAscii(const char* ascii, size_t len, uint8_t * data)
     {
         for (size_t i = 0; i < len; ++i)
         {
             char c = ascii[i];
             if (c < 0 || c > 127)
             {
-                return ByteBuffer(0);
+                return false;
             }
             data[i] = c;
         }
+        return true;
     }
 
     /**
@@ -531,11 +560,11 @@ public:
     {
         for (size_t i = 0; i < m_length; i++)
         {
-            if (m_data[i] > 127)
+            if (data[i] > 127)
             {
                 return;
             }
-            string[i] = static_cast<char>(m_data[i]);
+            string[i] = static_cast<char>(data[i]);
         }
 
         // zero terminated string
@@ -604,7 +633,7 @@ public:
             delete[] m_data;
             m_data = NULL;
             m_length = 0;
-            m_capacity = 0;
+            m_externalCapacity = 0;
         }
     }
 
@@ -619,14 +648,14 @@ private:
 
         if(m_isExternalBufferUsed)
         {
-            m_capacity = tmp.m_capacity + length + 8;
+            m_externalCapacity = tmp.m_externalCapacity + length + 8;
         }
         else
         {
-            m_capacity = tmp.m_internalCapacity + length + 8;
+            m_externalCapacity = tmp.m_internalCapacity + length + 8;
         }
 
-        m_data = m_capacity ? new uint8_t[m_capacity] : NULL;
+        m_data = m_externalCapacity ? new uint8_t[m_externalCapacity] : NULL;
 
         if(m_isExternalBufferUsed)
         {
@@ -647,7 +676,7 @@ private:
 
 
     size_t m_length;
-    size_t m_capacity;
+    size_t m_externalCapacity;
     uint8_t *m_data;
 
     static const size_t m_internalCapacity = 32;

@@ -64,7 +64,6 @@ class ByteBufferTest
         ut.checkEquality(appendBuf3.ptr(), exp6, 4);
 
         // ================== Slice ================
-
         ByteBuffer sliceBuf1;
         uint8_t input4[6] = {0x00, 0xFF, 0x02, 0xAA, 0xBB, 0xCC};
         ByteBuffer toSlice(input4, 6);
@@ -110,7 +109,7 @@ class ByteBufferTest
         ut.checkEquality(false, test1 == test2);
 
         // =================== Get =================
-
+        cout << "GET" << endl;
         ByteBuffer test6(input1, 3);
 
         ut.checkEquality(test6.get(0), 0x00);
