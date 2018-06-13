@@ -3,6 +3,8 @@
 
 ControlerMessage::ControlerMessage() : m_message(Packet::ControlRequest)
 {
+    m_directionMsgChanged = false;
+    m_throttleMsgChanged  = false;
 }
 
 ControlerMessage::~ControlerMessage()
@@ -11,33 +13,23 @@ ControlerMessage::~ControlerMessage()
 
 ControlerMessage& ControlerMessage::createDirectionMsg(const Joystick &joystick)
 {
-    TRACE_FUNCTION();
-    TRACING(INF);
-
     Joystick::Data data = joystick.getJoystickPosition();
-    m_message.clear();
 
     if(data != m_lastDirectionData)
     {
-        ByteBuffer north = ByteBuffer::fromInt(data.upper);
-        ByteBuffer south = ByteBuffer::fromInt(data.lower);
-        ByteBuffer east  = ByteBuffer::fromInt(data.right);
-        ByteBuffer west  = ByteBuffer::fromInt(data.left);
+        m_directionMsgChanged = true;
+        m_message.clear();
 
-        ByteBuffer button = isButtonPressed(data);
+        m_message.set(Message::North, ByteBuffer::fromInt(data.upper));
+        m_message.set(Message::South, ByteBuffer::fromInt(data.lower));
+        m_message.set(Message::West,  ByteBuffer::fromInt(data.left));
+        m_message.set(Message::East,  ByteBuffer::fromInt(data.right));
 
-        TRACE_BUF("NORTH:  ", north,  DBG);
-        TRACE_BUF("SOUTH:  ", south,  DBG);
-        TRACE_BUF("EAST:   ", east,   DBG);
-        TRACE_BUF("WEST:   ", west,   DBG);
-        TRACE_BUF("BUTTON: ", button, DBG);
-
-        m_message.set(Message::North, north);
-        m_message.set(Message::South, south);
-        m_message.set(Message::West,  west);
-        m_message.set(Message::East,  east);
-
-        m_message.set(Message::ButtonLeft, button);
+        m_message.set(Message::ButtonLeft, isButtonPressed(data));
+    }
+    else
+    {
+        m_directionMsgChanged = false;
     }
 
     m_lastDirectionData = data;
@@ -47,33 +39,23 @@ ControlerMessage& ControlerMessage::createDirectionMsg(const Joystick &joystick)
 
 ControlerMessage& ControlerMessage::createThrottleMsg(const Joystick &joystick)
 {
-    TRACE_FUNCTION();
-    TRACING(INF);
-
     Joystick::Data data = joystick.getJoystickPosition();
-    m_message.clear();
 
     if(data != m_lastThrottleData)
     {
-        ByteBuffer up    = ByteBuffer::fromInt(data.upper);
-        ByteBuffer down  = ByteBuffer::fromInt(data.lower);
-        ByteBuffer right = ByteBuffer::fromInt(data.right);
-        ByteBuffer left  = ByteBuffer::fromInt(data.left);
+        m_throttleMsgChanged = true;
+        m_message.clear();
 
-        ByteBuffer button = isButtonPressed(data);
+        m_message.set(Message::Up,          ByteBuffer::fromInt(data.upper));
+        m_message.set(Message::Down,        ByteBuffer::fromInt(data.lower));
+        m_message.set(Message::RotateLeft,  ByteBuffer::fromInt(data.left));
+        m_message.set(Message::RotateRight, ByteBuffer::fromInt(data.right));
 
-        TRACE_BUF("UP:     ", up,     DBG);
-        TRACE_BUF("DOWN:   ", down,   DBG);
-        TRACE_BUF("LEFT:   ", left,   DBG);
-        TRACE_BUF("RIGHT:  ", right,  DBG);
-        TRACE_BUF("BUTTON: ", button, DBG);
-
-        m_message.set(Message::Up,          up);
-        m_message.set(Message::Down,        down);
-        m_message.set(Message::RotateLeft,  left);
-        m_message.set(Message::RotateRight, right);
-
-        m_message.set(Message::ButtonRight, button);
+        m_message.set(Message::ButtonRight, isButtonPressed(data));
+    }
+    else
+    {
+        m_throttleMsgChanged = false;
     }
 
     m_lastThrottleData = data;

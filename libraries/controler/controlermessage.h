@@ -33,8 +33,14 @@ public:
      */
     Message* getControlerMessage(){return &m_message;}
 
+    bool isThrottleMsgChanged(){ return m_throttleMsgChanged; }
+    bool isDirectionMsgChanged(){ return m_directionMsgChanged; }
+
 private:
     Message m_message;
+
+    bool m_directionMsgChanged;
+    bool m_throttleMsgChanged;
 
     Joystick::Data m_lastDirectionData;
     Joystick::Data m_lastThrottleData;
