@@ -12,7 +12,7 @@
 /**
  * \brief An array of bytes.
  *
- * The data is allocated on the heap. Each instance makes its own copy of the data in constructor.
+ * The data is allocated on the stack or on the heap. Each instance makes its own copy of the data in constructor.
  * This class is not thread-safe.
  *
  * \invariant m_length == 0 iff m_data == nullptr
@@ -65,24 +65,27 @@ public:
 
         if (m_isExternalBufferUsed)
         {
-            if (length > 0 && src != NULL)
-            {
-                 for(int i = 0; i < m_length; i++)
-                 {
-                     m_data[i] = src[i];
-                 }
-            }
+            copy(src, m_data, length);
         }
         else
         {
-            if (length > 0 && src != NULL)
+            copy(src, &m_internalData[0], length);
+        }
+    }
+
+    size_t copy(const uint8_t *src, uint8_t *dst, size_t len)
+    {
+        size_t dataCopied = 0;
+
+        if(len > 0 && src != NULL)
+        {
+            for( ; dataCopied < m_length; dataCopied++)
             {
-                 for(int i = 0; i < m_length; i++)
-                 {
-                     m_internalData[i] = src[i];
-                 }
+                dst[dataCopied] = src[dataCopied];
             }
         }
+
+        return dataCopied;
     }
 
     /**
@@ -100,25 +103,13 @@ public:
             {
                 delete[] m_data;
                 m_data = new uint8_t[m_externalCapacity];
-
-                for(int i = 0; i < m_length; i++)
-                { 
-                    m_data[i] = src.m_data[i];
-                }
+                copy(src.m_data, m_data, m_length);
             }
             else
             {
                 m_data = NULL;
-
-                for(int i = 0; i < m_length; i++)
-                { 
-                    m_internalData[i] = src.m_internalData[i];
-                }
-                
-                for(int i = m_length; i < m_internalCapacity; i++)
-                {
-                    m_internalData[i] = 0;
-                }
+                memset(m_internalData, 0, m_internalCapacity);
+                copy(&src.m_internalData[0], &m_internalData[0],m_length); 
             }
         }
 
@@ -130,7 +121,6 @@ public:
      */
     ByteBuffer(const ByteBuffer &src)
     {
-        // Bohuzal neni k dispozici swap
         m_length = src.m_length;
         m_externalCapacity = src.m_externalCapacity;
         m_isExternalBufferUsed = src.m_isExternalBufferUsed;
@@ -138,21 +128,13 @@ public:
         if (m_isExternalBufferUsed)
         {
             m_data = new uint8_t[m_externalCapacity];
-
-            for(int i = 0; i < m_length; i++)
-            {
-               m_data[i] = src.m_data[i];
-            }
+            copy(src.m_data, m_data, m_length);
         }
         else
         {
             m_data = NULL;
-            
-            for(int i = 0; i < m_length; i++)
-            {
-               m_internalData[i] = src.m_internalData[i];
-            }
-        
+            memset(m_internalData, 0, m_internalCapacity);
+            copy(&src.m_internalData[0], &m_internalData[0], m_length);
         }
     }
 
@@ -280,36 +262,30 @@ public:
     {
         if(start >= 0 && start <= m_length && end >= start && end <= m_length)
         {
-            ByteBuffer bb(end - start);
+            size_t length = end - start;
 
-            if(bb.m_isExternalBufferUsed)
-            {
-                bb.m_length = bb.m_externalCapacity;
-            }
-            else
-            {
-                bb.m_length = end - start;
-            }
-            
-            if (bb.m_length > 0)
+            ByteBuffer bb(length);
+            bb.m_length = length;
+
+            if (length > 0)
             {
                 if(bb.m_isExternalBufferUsed && m_isExternalBufferUsed)
                 {
-                    for(size_t i = start, j = 0; j < end - start ; i++, j++)
+                    for(size_t i = start, j = 0; j < length; i++, j++)
                     {
                         bb.m_data[j] = m_data[i];
                     }
                 }
                 else if(!bb.m_isExternalBufferUsed && !m_isExternalBufferUsed)
                 {
-                    for(size_t i = start, j = 0; j < end - start ; i++, j++)
+                    for(size_t i = start, j = 0; j < length; i++, j++)
                     {
                         bb.m_internalData[j] = m_internalData[i];
                     }
                 }
                 else
                 {
-                    for(size_t i = start, j = 0; j < end - start ; i++, j++)
+                    for(size_t i = start, j = 0; j < length; i++, j++)
                     {
                         bb.m_internalData[j] = m_data[i];
                     }
@@ -338,7 +314,7 @@ public:
             {
                 realocate(length);
             }
-            
+
             // External buffer is used. Append data to external buffer
             for(int i = 0; i < length; i++)
             {
@@ -371,31 +347,6 @@ public:
         }
 
         return *this;
-    }
-
-    /**
-    * \brief  Creates a new byte buffer by appending another byte buffer
-    * \param  bytes to append
-    * \param  length of the byte array
-    * \return the new byte buffer
-    */
-    // TODO NOT IMPLEMENTED FOR INTERNAL/EXTERNAL BUFFER
-    ByteBuffer expensiveAppend(const uint8_t *src, size_t length) const
-    {
-        ByteBuffer bb(m_length + length);
-        int j = 0;
-
-        for(int i = 0; i < m_length; i++, j++ )
-        {
-            bb.m_data[j] = m_data[i];
-        }
-
-        for(int i = 0; i < length; i++, j++ )
-        {
-            bb.m_data[j] = src[i];
-        }
-
-        return bb;
     }
 
     /**
@@ -462,32 +413,26 @@ public:
         }
 
         ByteBuffer bb(len / 2);
+        bb.m_length = len / 2;
 
         if(bb.m_isExternalBufferUsed)
         {
-            bb.m_length = bb.m_externalCapacity;
+            fromHex(hex, bb.m_data, bb.m_length);
         }
         else
         {
-            bb.m_length = len / 2;
-        }
-
-        if(bb.m_isExternalBufferUsed)
-        {
-            for (size_t i = 0; i < bb.m_length; ++i)
-            {
-                bb.m_data[i] = (hexDigitValue(hex[2 * i]) << 4) | hexDigitValue(hex[2 * i + 1]);
-            }
-        }
-        else
-        {
-            for (size_t i = 0; i < bb.m_length; ++i)
-            {
-                bb.m_internalData[i] = (hexDigitValue(hex[2 * i]) << 4) | hexDigitValue(hex[2 * i + 1]);
-            }
+            fromHex(hex, &bb.m_internalData[0], bb.m_length);
         }
 
         return bb;
+    }
+
+    static void fromHex(const char* hex, uint8_t *dst, size_t len)
+    {
+        for (size_t i = 0; i < len; ++i)
+        {
+            dst[i] = (hexDigitValue(hex[2 * i]) << 4) | hexDigitValue(hex[2 * i + 1]);
+        }
     }
 
     /**
@@ -500,16 +445,16 @@ public:
     {
         ByteBuffer bb(len);
         bb.m_length = len;
-        
+
         bool res = false;
 
         if(bb.m_isExternalBufferUsed)
         {
-             res = fromAscii(ascii, len, bb.m_data);
+             res = fromAscii(ascii, bb.m_data, len);
         }
         else
         {
-            res = fromAscii(ascii, len, &bb.m_internalData[0]);
+            res = fromAscii(ascii, &bb.m_internalData[0], len);
         }
 
         if(res)
@@ -519,7 +464,7 @@ public:
     }
 
     // TODO will be private
-    static bool fromAscii(const char* ascii, size_t len, uint8_t * data)
+    static bool fromAscii(const char* ascii, uint8_t *dst, size_t len)
     {
         for (size_t i = 0; i < len; ++i)
         {
@@ -528,7 +473,7 @@ public:
             {
                 return false;
             }
-            data[i] = c;
+            dst[i] = c;
         }
         return true;
     }
@@ -547,28 +492,28 @@ public:
 
         if(m_isExternalBufferUsed)
         {
-             asAscii(string, len, m_data);
+             asAscii(m_data, string);
         }
         else
         {
-             asAscii(string, len, &m_internalData[0]);
+             asAscii(&m_internalData[0], string);
         }
     }
 
     //TODO will be private
-    void asAscii(char *string, size_t len, const uint8_t *data) const
+    void asAscii(const uint8_t *src, char *dst) const
     {
         for (size_t i = 0; i < m_length; i++)
         {
-            if (data[i] > 127)
+            if (src[i] > 127)
             {
                 return;
             }
-            string[i] = static_cast<char>(data[i]);
+            dst[i] = static_cast<char>(src[i]);
         }
 
         // zero terminated string
-        string[m_length] = 0;
+        dst[m_length] = 0;
     }
 
     /**
@@ -621,13 +566,10 @@ public:
     {
         if(!m_isExternalBufferUsed)
         {
-            for(size_t i = 0; i < m_internalCapacity; i++)
-            {
-                 m_internalData[i] = 0;
-            }
+            memset(m_internalData, 0, m_internalCapacity);
             m_length = 0;
         }
-  
+
         if(m_data != NULL)
         {
             delete[] m_data;
