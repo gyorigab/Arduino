@@ -63,7 +63,7 @@ ByteBuffer Quadcopter::go()
 
         ControlerData cdata(msg);
 
-        TRACE_BUF("Data Payload Received ",p.getPayload(), DBG );
+        TRACE_BUF("Data Payload Received ",p.getPayload(), INF );
 
         m_motors.throttle(cdata);
     }

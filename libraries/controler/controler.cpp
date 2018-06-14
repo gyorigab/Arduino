@@ -46,11 +46,12 @@ void Controler::go()
 {
     // Create control message by using data of given joysticks
     m_cmsg.createDirectionMsg(m_directionJoystick);
+    Message *msg = NULL;
 
     if(m_cmsg.isDirectionMsgChanged())
     {
         // Get pointer to controler message which stores control data
-        Message *msg = m_cmsg.getControlerMessage();
+        msg = m_cmsg.getControlerMessage();
 
         // Send message to dron
         sendMessage(*msg);
