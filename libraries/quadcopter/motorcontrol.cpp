@@ -75,18 +75,21 @@ void MotorControl::startStopEngines(const ControlerData &data)
     TRACING(DBG);
 
     Data throttleData = data.getThrottleData();
+    Data previousData = m_previousControlerData.getThrottleData();
 
     TRACE_VAR("Throttle data key: ", throttleData.key, DBG);
 
-    if(throttleData.key == true)
+    if(throttleData.key == true && previousData.key != throttleData.key)
     {
         if(m_throttle > MOTOR_OFF)
         {
+            TRACE("FORCE OFF", DBG);
             m_isForecedOff = true;
             stopEngines();
         }
         else
         {
+            TRACE("FORCE ON", DBG);
             m_isForecedOff = false;
             startEngines();
         }
