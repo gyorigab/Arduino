@@ -24,14 +24,10 @@ void MotorControl::throttle(const ControlerData& data)
 {
     TRACING(DBG);
 
-    // TODO testing purposes... uncomment if done
-    //if(!m_isForecedOff)
+    if(!m_isForecedOff)
     {
         Data currentData = data.getThrottleData();
         Data previousData = m_previousControlerData.getThrottleData();
-
-        TRACE_VAR("Current data upper: ", currentData.upper, DBG);
-        TRACE_VAR("Previous data upper: ", previousData.upper, DBG);
 
         m_previousControlerData = data;
 
@@ -72,7 +68,7 @@ Angle MotorControl::direction(const ControlerData& data)
 
 void MotorControl::startStopEngines(const ControlerData &data)
 {
-    TRACING(DBG);
+    TRACING(INF);
 
     Data throttleData = data.getThrottleData();
     Data previousData = m_previousControlerData.getThrottleData();
@@ -110,7 +106,7 @@ void MotorControl::stopEngines()
 
 void MotorControl::throttle(int t)
 {
-    TRACING(DBG);
+    TRACING(INF);
     TRACE_VAR("Throttle for all motors: ", m_throttle, DBG);
 
     if(!m_isForecedOff)

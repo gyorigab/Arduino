@@ -50,12 +50,12 @@ ByteBuffer Quadcopter::go()
 
     Angle pid = m_pid.getPidCorrection(currentDronAngle, desriedDronAngle);
 
-    TRACE_VAR("PID correction X: ", pid.getX(), DBG);
-    TRACE_VAR("PID correction Y: ", pid.getY(), DBG);
+    TRACE_VAR("PID correction X: ", pid.getX(), INF);
+    TRACE_VAR("PID correction Y: ", pid.getY(), INF);
 
     if(!bb.empty())
     {
-        TRACE_BUF("Received packet:", bb, INF);
+        TRACE_BUF("Received packet:", bb, DBG);
 
         Packet p = decode(bb);
 
@@ -63,7 +63,7 @@ ByteBuffer Quadcopter::go()
 
         ControlerData cdata(msg);
 
-        TRACE_BUF("Data Payload Received ",p.getPayload(), INF );
+        TRACE_BUF("Data Payload Received ",p.getPayload(), DBG );
 
         m_motors.startStopEngines(cdata);
         m_motors.throttle(cdata);

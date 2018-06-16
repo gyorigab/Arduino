@@ -66,6 +66,11 @@ private:
     static const int ACCEL_XOUT_REGISTER = 0x3B;
     static const int TOTAL_REGISTERS = 6;
 
+    // Center Gyroscope. HW position on drone is not perfectly horizontal.
+    static const int16_t CENTER_CORRECTION_X =  2.80;
+    static const int16_t CENTER_CORRECTION_Y = -9.10;
+
+
     int16_t m_accelerationX;
     int16_t m_accelerationY;
     int16_t m_accelerationZ;

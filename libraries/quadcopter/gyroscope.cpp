@@ -48,7 +48,7 @@ void Gyroscope::obtainRawData()
 
 Angle Gyroscope::getAcclerationAngle()
 {
-    TRACING(INF);
+    TRACING(DBG);
 
     float angleX = 0.0;
     float angleY = 0.0;
@@ -66,8 +66,8 @@ Angle Gyroscope::getAcclerationAngle()
     angleY = atan(-1 * accX / sqrt(pow(accY,2) + pow(accZ,2)));
 
     // Inclintation angle [deg]
-    angleX = Utils::radToDeg(angleX);
-    angleY = Utils::radToDeg(angleY);
+    angleX = Utils::radToDeg(angleX) + CENTER_CORRECTION_X;
+    angleY = Utils::radToDeg(angleY) + CENTER_CORRECTION_Y;
 
     TRACE_VAR("Acceleration angle X: ", angleX, DBG);
     TRACE_VAR("Acceleration angle Y: ", angleY, DBG);
@@ -97,7 +97,7 @@ Angle Gyroscope::getGyroscopeAngle()
 
 Angle Gyroscope::getAngle()
 {
-    TRACING(INF);
+    TRACING(DBG);
 
     obtainRawData();
 

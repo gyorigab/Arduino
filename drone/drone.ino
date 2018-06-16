@@ -16,7 +16,7 @@ void setup()
   q.init();
     
   Trace::enableCallStack(false);
-  Trace::enableTrace(false);
+  Trace::enableTrace(true);
   Trace::setVerbosity(DBG);
 }
 
