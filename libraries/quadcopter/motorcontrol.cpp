@@ -24,7 +24,7 @@ void MotorControl::throttle(const ControlerData& data)
 {
     TRACING(DBG);
 
-    if(!m_isForecedOff)
+    //if(!m_isForecedOff)
     {
         Data currentData = data.getThrottleData();
         Data previousData = m_previousControlerData.getThrottleData();
@@ -95,7 +95,13 @@ void MotorControl::startStopEngines(const ControlerData &data)
 void MotorControl::startEngines()
 {
     m_throttle = MOTOR_START;
-    throttle(m_throttle);
+    int16_t begin = 1000;
+
+    for(int i = 0; i <= MOTOR_START; i++)
+    {
+        throttle(m_throttle);
+        delay(10);
+    }
 }
 
 void MotorControl::stopEngines()
@@ -109,7 +115,7 @@ void MotorControl::throttle(int t)
     TRACING(INF);
     TRACE_VAR("Throttle for all motors: ", m_throttle, DBG);
 
-    if(!m_isForecedOff)
+    //if(!m_isForecedOff)
     {
         m_throttle = t;
 
@@ -124,14 +130,20 @@ void MotorControl::control(const Angle &angle)
 {
     TRACING(DBG);
 
-    if(!m_isForecedOff)
+    //if(!m_isForecedOff)
     {
-        TRACE_VAR("THROTLE X: ", m_throttle + angle.getX(), DBG);
-        TRACE_VAR("THROTLE Y: ", m_throttle - angle.getX(), DBG);
+        TRACE_VAR("THROTLE NORTH: ", m_throttle + angle.getY(), DBG);
+        m_motorNorth.write(m_throttle - angle.getY());
 
-        m_motorNorth.write(m_throttle - angle.getX());
-        m_motorSouth.write(m_throttle + angle.getX());
-        m_motorEast.write(m_throttle  - angle.getY());
-        m_motorWest.write(m_throttle  + angle.getY());
+        TRACE_VAR("THROTLE SOUTH: ", m_throttle - angle.getY(), DBG);
+        m_motorSouth.write(m_throttle + angle.getY());
+
+        TRACE_VAR("THROTLE EAST: ",  m_throttle + angle.getX(), DBG);
+        m_motorEast.write(m_throttle  - angle.getX());
+
+        TRACE_VAR("THROTLE WEST: ",  m_throttle - angle.getX(), DBG);
+        m_motorWest.write(m_throttle  + angle.getX());
     }
+
+    TRACE("=============================",DBG);
 }

@@ -15,12 +15,12 @@ public:
     void cutOverLimits(Angle &angle);
 
 private:
-    static const float KP = 3.55;
-    static const float KI = 0.005;
-    static const float KD = 2.05;
+    static const float KP = 2.00;
+    static const float KI = 0.00;
+    static const float KD = 0.00;
 
-    static const float MIN = -1000.0;
-    static const float MAX =  1000.0;
+    static const float MIN = -200.0;
+    static const float MAX =  200.0;
 
     Angle m_p;
     Angle m_i;

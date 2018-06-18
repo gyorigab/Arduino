@@ -23,13 +23,13 @@ Angle Pid::getPidCorrection(const Angle &currentAngle,const Angle &desiredAngle 
 
     if(-3 < error.getX() < 3)
     {
-        float iX = m_i.getX(); + (KI * error.getX());
+        float iX = m_i.getX() + (KI * error.getX());
         m_i.setX(iX);
     }
 
     if(-3 < error.getY() < 3)
     {
-        float iY = m_i.getY(); + (KI * error.getY());
+        float iY = m_i.getY() + (KI * error.getY());
         m_i.setY(iY);
     }
 

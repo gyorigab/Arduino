@@ -14,7 +14,7 @@ const uint8_t DRONE_RADIO_CE  = 48;
 const uint8_t DRONE_RADIO_CSN = 49;
 
 Quadcopter::Quadcopter() : m_radio(RECV_ADDR, TRAN_ADDR, DRONE_RADIO_CE, DRONE_RADIO_CSN),
-                           m_motors(PWM_NORTH, PWM_SOUTH, PWM_WEST, PWM_EAST)
+                           m_motors(PWM_NORTH, PWM_SOUTH, PWM_EAST, PWM_WEST)
 {
 
 }
@@ -27,7 +27,7 @@ void Quadcopter::init()
     m_motors.init();
 
     // Let the HW init
-    delay(1000);
+    delay(2000);
 
     // Start Engines
     m_motors.startEngines();
@@ -46,12 +46,12 @@ ByteBuffer Quadcopter::go()
     TRACE_VAR("Angle Y: ", currentDronAngle.getY(), DBG);
 
     // TODO for test purposes just get drone to horizontal position
-    Angle desriedDronAngle(0.0, 0.0);
+    Angle desriedDronAngle(-10.0, -10.0);
 
     Angle pid = m_pid.getPidCorrection(currentDronAngle, desriedDronAngle);
 
-    TRACE_VAR("PID correction X: ", pid.getX(), INF);
-    TRACE_VAR("PID correction Y: ", pid.getY(), INF);
+    TRACE_VAR("PID correction X: ", pid.getX(), DBG);
+    TRACE_VAR("PID correction Y: ", pid.getY(), DBG);
 
     if(!bb.empty())
     {
@@ -65,11 +65,11 @@ ByteBuffer Quadcopter::go()
 
         TRACE_BUF("Data Payload Received ",p.getPayload(), DBG );
 
-        m_motors.startStopEngines(cdata);
+        //m_motors.startStopEngines(cdata);
         m_motors.throttle(cdata);
     }
 
-    //m_motors.control(pid);
+    m_motors.control(pid);
 
     //TRACE_MEM();
 

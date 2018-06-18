@@ -27,9 +27,9 @@ private:
     static const ByteBuffer TRAN_ADDR;
 
     static const uint8_t PWM_NORTH = 2;
-    static const uint8_t PWM_SOUTH = 3;
-    static const uint8_t PWM_EAST  = 4;
-    static const uint8_t PWM_WEST  = 5;
+    static const uint8_t PWM_SOUTH = 5;
+    static const uint8_t PWM_EAST  = 93;
+    static const uint8_t PWM_WEST  = 94;
 };
 
 #endif

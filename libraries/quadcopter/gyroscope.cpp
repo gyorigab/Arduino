@@ -71,7 +71,7 @@ Angle Gyroscope::getAcclerationAngle()
 
     TRACE_VAR("Acceleration angle X: ", angleX, DBG);
     TRACE_VAR("Acceleration angle Y: ", angleY, DBG);
-    TRACE_VAR("Acceleration angle Z: ", accZ   , DBG);
+    TRACE_VAR("Acceleration angle Z: ", accZ  , DBG);
 
     return Angle(angleX, angleY);
 }
@@ -97,7 +97,7 @@ Angle Gyroscope::getGyroscopeAngle()
 
 Angle Gyroscope::getAngle()
 {
-    TRACING(DBG);
+    TRACING(INF);
 
     obtainRawData();
 
