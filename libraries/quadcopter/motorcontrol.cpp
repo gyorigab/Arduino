@@ -100,7 +100,6 @@ void MotorControl::startEngines()
     for(int i = 0; i <= MOTOR_START; i++)
     {
         throttle(m_throttle);
-        delay(10);
     }
 }
 

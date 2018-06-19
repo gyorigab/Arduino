@@ -48,9 +48,8 @@ void Motor::write(int16_t inpThrottle)
     // cut values which are over limits
     int throttle = cutOverLimits(inpThrottle);
 
-   TRACE_VAR("MOTOR current Throttle ", throttle, DBG);
-   TRACE_VAR("MOTOR last    Throttle ", m_lastThrottleVal, DBG);
-
+    TRACE_VAR("MOTOR current Throttle ", throttle, DBG);
+    TRACE_VAR("MOTOR last    Throttle ", m_lastThrottleVal, DBG);
 
     if(throttle != m_lastThrottleVal)
     {
@@ -67,8 +66,6 @@ void Motor::write(int16_t inpThrottle)
         for(int i = 0; i < diff; i++)
         {
             m_lastThrottleVal += increment;
-            TRACE_VAR("MOTOR increment ", m_lastThrottleVal, DBG);
-
             m_servo.writeMicroseconds(m_lastThrottleVal);
             //delay(10);
         }

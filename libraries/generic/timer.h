@@ -18,8 +18,7 @@ public:
 
 private:
 
-    double m_timePrev;
-    double m_timeCurr;
+    double m_previousTime;
 };
 
 #endif

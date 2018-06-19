@@ -27,7 +27,7 @@ void Quadcopter::init()
     m_motors.init();
 
     // Let the HW init
-    delay(2000);
+    delay(1000);
 
     // Start Engines
     m_motors.startEngines();
@@ -46,7 +46,7 @@ ByteBuffer Quadcopter::go()
     TRACE_VAR("Angle Y: ", currentDronAngle.getY(), DBG);
 
     // TODO for test purposes just get drone to horizontal position
-    Angle desriedDronAngle(-10.0, -10.0);
+    Angle desriedDronAngle(-0.0, -0.0);
 
     Angle pid = m_pid.getPidCorrection(currentDronAngle, desriedDronAngle);
 

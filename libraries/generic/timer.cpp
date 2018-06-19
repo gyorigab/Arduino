@@ -3,7 +3,7 @@
 
 Timer::Timer()
 {
-    m_timeCurr = m_timePrev = 0;
+    m_previousTime = 0;
 }
 
 Timer::~Timer()
@@ -11,14 +11,15 @@ Timer::~Timer()
 
 void Timer::init()
 {
-    m_timePrev = 0;
-    m_timeCurr = millis();
+    m_previousTime = 0;
 }
 
 double Timer::getElapsedTime()
 {
-    m_timePrev = m_timeCurr;
-    m_timeCurr = millis();
+    double currentTime = millis();
+    double elapsedTime = (currentTime - m_previousTime) / 1000;
 
-    return (m_timeCurr - m_timePrev) / 1000;
+    m_previousTime = currentTime;
+
+    return elapsedTime;
 }

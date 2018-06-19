@@ -16,8 +16,8 @@ public:
 
 private:
     static const float KP = 2.00;
-    static const float KI = 0.00;
-    static const float KD = 0.00;
+    static const float KI = 1.00;
+    static const float KD = 1.00;
 
     static const float MIN = -200.0;
     static const float MAX =  200.0;
