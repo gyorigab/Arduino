@@ -22,6 +22,8 @@ private:
     static const float MIN = -200.0;
     static const float MAX =  200.0;
 
+    static const float INTEGRAL_LIMIT = 3.0;
+
     Angle m_p;
     Angle m_i;
     Angle m_d;

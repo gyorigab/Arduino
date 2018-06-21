@@ -14,7 +14,7 @@ public:
     *
     * \return elpased time in [s]
     */
-    double getElapsedTime();
+    double getTimeDiff();
 
 private:
 

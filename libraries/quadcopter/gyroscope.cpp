@@ -106,7 +106,7 @@ Angle Gyroscope::getAngle()
     Angle gyrAngle = getGyroscopeAngle();
 
     // Elapsed time in seconds
-    float elapsedTime = m_timer.getElapsedTime();
+    float elapsedTime = m_timer.getTimeDiff();
 
     TRACE_VAR("Elapsed time: ", elapsedTime,    DBG);
     TRACE_VAR("Prev angle X: ", m_totalAngle.getX(), DBG);

@@ -14,12 +14,12 @@ void Timer::init()
     m_previousTime = 0;
 }
 
-double Timer::getElapsedTime()
+double Timer::getTimeDiff()
 {
     double currentTime = millis();
-    double elapsedTime = (currentTime - m_previousTime) / 1000;
+    double timeDiff = (currentTime - m_previousTime) / 1000;
 
     m_previousTime = currentTime;
 
-    return elapsedTime;
+    return timeDiff;
 }
