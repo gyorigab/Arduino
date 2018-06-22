@@ -25,6 +25,7 @@ SOURCES += main.cpp \
         ../../utils.cpp\
         ../../timer.cpp\
         ../../angle.cpp\
+        ../../plot.cpp\
         ../../../quadcopter/quadcopter.cpp\
         ../../../quadcopter/controlerdata.cpp\
         ../../../quadcopter/motor.cpp\
@@ -48,6 +49,7 @@ HEADERS += \
     ../../utils.h\
     ../../timer.h\
     ../../angle.h\
+    ../../plot.h\
     ../../../quadcopter/quadcopter.h\
     ../../../quadcopter/controlerdata.h\
     ../../../quadcopter/motor.h\

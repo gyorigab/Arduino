@@ -1,5 +1,16 @@
 #include "pid.h"
 #include "trace.h"
+#include "plot.h"
+
+const float Pid::KP = 2.00;
+const float Pid::KI = 0.00;
+const float Pid::KD = 0.00;
+
+const float Pid::MIN = -200.0;
+const float Pid::MAX =  200.0;
+
+const float Pid::INTEGRAL_LIMIT = 3.0;
+
 
 Pid::Pid()
 {}
@@ -58,6 +69,8 @@ Angle Pid::getPidCorrection(const Angle &currentAngle,const Angle &desiredAngle 
     Angle pid = m_p + m_i + m_d;
 
     cutOverLimits(pid);
+
+    Plot::draw(pid.getX(), desiredAngle.getX(), error.getX());
 
     return pid;
 }
