@@ -43,7 +43,7 @@ int Motor::cutOverLimits(int16_t rawThrottle)
 
 void Motor::write(int16_t inpThrottle)
 {
-    TRACING(DBG);
+    TRACING(INF);
 
     // cut values which are over limits
     int throttle = cutOverLimits(inpThrottle);

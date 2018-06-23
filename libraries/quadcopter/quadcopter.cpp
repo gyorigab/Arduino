@@ -1,8 +1,6 @@
 #include <quadcopter.h>
 #include "packet.h"
 #include "trace.h"
-#include "controlerdata.h"
-#include "angle.h"
 #include "motor.h"
 
 const byte address[][6] = {"00001","00002"};
@@ -31,6 +29,7 @@ void Quadcopter::init()
 
     // Start Engines
     m_motors.startEngines();
+    m_desriedDronAngle = Angle(0.0, 0.0);
 }
 
 ByteBuffer Quadcopter::go()
@@ -40,18 +39,11 @@ ByteBuffer Quadcopter::go()
 
     ByteBuffer bb = m_radio.read();
 
+    //TODO check
     Angle currentDronAngle = m_gyroscope.getAngle();
 
     TRACE_VAR("Angle X: ", currentDronAngle.getX(), DBG);
     TRACE_VAR("Angle Y: ", currentDronAngle.getY(), DBG);
-
-    // TODO for test purposes just get drone to horizontal position
-    Angle desriedDronAngle(-0.0, -0.0);
-
-    Angle pid = m_pid.getPidCorrection(currentDronAngle, desriedDronAngle);
-
-    TRACE_VAR("PID correction X: ", pid.getX(), DBG);
-    TRACE_VAR("PID correction Y: ", pid.getY(), DBG);
 
     if(!bb.empty())
     {
@@ -67,7 +59,11 @@ ByteBuffer Quadcopter::go()
 
         //m_motors.startStopEngines(cdata);
         m_motors.throttle(cdata);
+
+        m_desriedDronAngle = m_motors.direction(cdata);
     }
+
+    Angle pid = m_pid.getPidCorrection(currentDronAngle, m_desriedDronAngle);
 
     m_motors.control(pid);
 

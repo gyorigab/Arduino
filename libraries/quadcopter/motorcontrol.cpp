@@ -50,20 +50,28 @@ void MotorControl::throttle(const ControlerData& data)
 
 Angle MotorControl::direction(const ControlerData& data)
 {
+    TRACING(INF);
+
     ControlerData::Data directionData = data.getDirectionData();
 
-    int throttleNorth = directionData.upper;
-    int throttleSouth = directionData.lower;
-    int throttleEast  = directionData.right;
-    int throttleWest  = directionData.left;
+    const int16_t MIN_ANGLE = 0;
+    const int16_t MAX_ANGLE = 20;
 
-    // TODO transform data to angle
+    int16_t forward  = map(directionData.upper, 0, 255, MIN_ANGLE,  MAX_ANGLE);
+    int16_t backward = map(directionData.lower, 0, 255, MIN_ANGLE, -MAX_ANGLE);
+    int16_t left     = map(directionData.left,  0, 255, MIN_ANGLE,  MAX_ANGLE);
+    int16_t right    = map(directionData.right, 0, 255, MIN_ANGLE, -MAX_ANGLE );
 
-    // TODO Throttle all + direction must not be over 2000
-    m_motorNorth.write(m_throttle);
-    m_motorSouth.write(m_throttle);
-    m_motorEast.write(m_throttle);
-    m_motorWest.write(m_throttle);
+    // one of the forward or backward is always zero (the same left or right)
+    // 10 + 0    =  10
+    // 0 + (-10) = -10
+
+    TRACE_VAR("FORWARD: ",forward,  INF );
+    TRACE_VAR("BACKWARD ",backward, INF );
+    TRACE_VAR("LEFT:    ",left,     INF );
+    TRACE_VAR("RIGHT:   ",right,    INF );
+
+    return Angle(forward + backward, left + right);
 }
 
 void MotorControl::startStopEngines(const ControlerData &data)
@@ -127,7 +135,7 @@ void MotorControl::throttle(int t)
 
 void MotorControl::control(const Angle &angle)
 {
-    TRACING(DBG);
+    TRACING(INF);
 
     //if(!m_isForecedOff)
     {

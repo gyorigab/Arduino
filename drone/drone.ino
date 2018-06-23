@@ -17,7 +17,7 @@ void setup()
   t.init();
   q.init();
   
-  Plot::init();
+  //Plot::init();
     
   Trace::enableCallStack(false);
   Trace::enableTrace(false);

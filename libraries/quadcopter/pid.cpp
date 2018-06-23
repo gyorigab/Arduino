@@ -2,8 +2,8 @@
 #include "trace.h"
 #include "plot.h"
 
-const float Pid::KP = 2.00;
-const float Pid::KI = 0.00;
+const float Pid::KP = 3.20;
+const float Pid::KI = 1.00;
 const float Pid::KD = 0.00;
 
 const float Pid::MIN = -200.0;
@@ -68,9 +68,13 @@ Angle Pid::getPidCorrection(const Angle &currentAngle,const Angle &desiredAngle 
 
     Angle pid = m_p + m_i + m_d;
 
+    TRACE_VAR("PID correction X: ", pid.getX(), DBG);
+    TRACE_VAR("PID correction Y: ", pid.getY(), DBG);
+
     cutOverLimits(pid);
 
-    Plot::draw(pid.getX(), desiredAngle.getX(), error.getX());
+    // Plot DEBUG purposes
+    // Plot::draw(pid.getY(), desiredAngle.getY(), error.getY());
 
     return pid;
 }

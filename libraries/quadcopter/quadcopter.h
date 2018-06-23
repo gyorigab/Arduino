@@ -8,6 +8,7 @@
 #include "gyroscope.h"
 #include "pid.h"
 #include "motorcontrol.h"
+#include "angle.h"
 
 class Quadcopter
 {
@@ -22,6 +23,8 @@ private:
     Gyroscope m_gyroscope;
     Pid m_pid;
     MotorControl m_motors;
+
+    Angle m_desriedDronAngle;
 
     static const ByteBuffer RECV_ADDR;
     static const ByteBuffer TRAN_ADDR;
